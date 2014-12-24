@@ -35,6 +35,7 @@ public abstract class GameEnvironment extends Application {
     private HashMap<Integer, KeyCode> keyBindings = new HashMap<Integer, KeyCode>();
     // TODO: make enums
     protected boolean[] keys = new boolean[LAST];
+    protected int[] skillCosts = new int[LAST];
 
     protected abstract Parent createContent();
     protected abstract void update();
@@ -51,6 +52,11 @@ public abstract class GameEnvironment extends Application {
                 update();
             }
         };
+
+        skillCosts[UP] = 2;
+        skillCosts[GRAVITY] = 5;
+        skillCosts[PULL] = 120;
+        skillCosts[PUSH] = 120;
 
         keyBindings.put(UP, KeyCode.W);
         keyBindings.put(DOWN, KeyCode.S);

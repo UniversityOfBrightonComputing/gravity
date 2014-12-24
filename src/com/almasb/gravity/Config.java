@@ -6,24 +6,44 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.text.Font;
+
 public final class Config {
 
-    // 40x40 tiles, w 32 h 18
+    private Config() {
+
+    }
+
+    private static final Config instance = new Config();
+
+    /* APP CONSTANTS */
+
     public static final int BLOCK_SIZE = 40;
 
     public static final int APP_W = 32 * BLOCK_SIZE;
     public static final int APP_H = 18 * BLOCK_SIZE;
 
-    public static final String RESOURCES_ROOT = "./res/";
+    /**
+     * How many frames equal to a second
+     * i.e. FPS
+     */
+    public static final int SECOND = 60;
+    public static final float TIME_STEP = 1.0f / SECOND;
+
+    public static final Font FONT = Font.font(16);
+
+    public static final String RESOURCES_ROOT = "/res/";
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
 
     public static final class Image {
         public static javafx.scene.image.Image PLAYER;
         public static javafx.scene.image.Image ENEMY;
         public static javafx.scene.image.Image PLATFORM;
+        public static javafx.scene.image.Image EXPLOSION;
+        public static javafx.scene.image.Image SPIKE;
 
         private static javafx.scene.image.Image loadImage(String path) throws Exception {
-            InputStream is = Config.class.getClassLoader().getResourceAsStream(path);
+            InputStream is = instance.getClass().getResourceAsStream(path);
             javafx.scene.image.Image img = new javafx.scene.image.Image(is);
             is.close();
             return img;
@@ -32,8 +52,10 @@ public final class Config {
         static {
             try {
                 PLAYER = loadImage(IMAGES_ROOT + "player1.png");
-                ENEMY = loadImage(IMAGES_ROOT + "enemy1.png");
+                ENEMY = loadImage(IMAGES_ROOT + "enemy3.png");
                 PLATFORM = loadImage(IMAGES_ROOT + "platform.png");
+                EXPLOSION = loadImage(IMAGES_ROOT + "explosion.png");
+                SPIKE = loadImage(IMAGES_ROOT + "spike.png");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -48,7 +70,7 @@ public final class Config {
         private static List<String> loadText(String path) throws Exception {
             ArrayList<String> lines = new ArrayList<String>();
 
-            InputStream is = Config.class.getClassLoader().getResourceAsStream(path);
+            InputStream is = instance.getClass().getResourceAsStream(path);
             BufferedReader bf = new BufferedReader(new InputStreamReader(is));
 
             String line = "";

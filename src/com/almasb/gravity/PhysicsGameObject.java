@@ -18,6 +18,10 @@ public abstract class PhysicsGameObject extends GameObject {
     protected BodyDef bodyDef;
     protected Body body;
 
+    public enum Type {
+        PLAYER, PLATFORM, ENEMY
+    }
+
     public PhysicsGameObject(float x, float y, float width, float height, BodyType type, Image graphics) {
         super(x, y, graphics);
 
@@ -27,14 +31,14 @@ public abstract class PhysicsGameObject extends GameObject {
 
         fixtureDef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2, height / 2);
+        shape.setAsBox(toMeters(width / 2), toMeters(height / 2));
         fixtureDef.shape = shape;
         fixtureDef.density = 0.005f;
         fixtureDef.friction = 0.5f;
 
         bodyDef = new BodyDef();
         bodyDef.type = type;
-        bodyDef.position.set(x + width / 2, Config.APP_H - (y + height / 2));
+        bodyDef.position.set(toMeters(x + width / 2), toMeters(Config.APP_H - (y + height / 2)));
 
         body = GameEnvironment.WORLD.createBody(bodyDef);
         body.createFixture(fixtureDef);
@@ -42,8 +46,16 @@ public abstract class PhysicsGameObject extends GameObject {
 
     @Override
     public void onUpdate() {
-        this.setTranslateX(body.getPosition().x - bbox.getWidth() / 2);
-        this.setTranslateY(Config.APP_H - body.getPosition().y - bbox.getHeight() / 2);
+        this.setTranslateX(toPixels(body.getPosition().x - toMeters(bbox.getWidth() / 2)));
+        this.setTranslateY(toPixels(toMeters(Config.APP_H) - body.getPosition().y - toMeters(bbox.getHeight() / 2)));
         this.setRotate(-Math.toDegrees(body.getAngle()));
+    }
+
+    private float toMeters(double pixels) {
+        return (float)pixels * 0.05f;
+    }
+
+    private float toPixels(double meters) {
+        return (float)meters * 20f;
     }
 }

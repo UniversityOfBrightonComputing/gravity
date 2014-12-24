@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 public abstract class GameObject extends Parent {
 
     protected ImageView sprite;
+    protected boolean alive = true, dying = false;
 
     public GameObject(float x, float y, Image graphics) {
         this.setTranslateX(x);
@@ -19,4 +20,9 @@ public abstract class GameObject extends Parent {
     }
 
     public abstract void onUpdate();
+    public abstract void onDeath();
+
+    public boolean isAlive() {
+        return alive;
+    }
 }

@@ -37,6 +37,7 @@ public class Level extends Group {
 
     private void parse() {
         createScreenBounds();
+        //createSpikes();
         for (int i = 0; i < Config.APP_H / Config.BLOCK_SIZE; i++) {
             for (int j = 0; j < Config.APP_W / Config.BLOCK_SIZE; j++) {
                 switch (grid[j][i]) {
@@ -64,6 +65,12 @@ public class Level extends Group {
         for (int i = 0; i < Config.APP_W / Config.BLOCK_SIZE; i++) {
             getChildren().add(new Platform(i*40, -40));
             getChildren().add(new Platform(i*40, Config.APP_H - 40));
+        }
+    }
+
+    private void createSpikes() {
+        for (int i = 0; i < Config.APP_W / Config.BLOCK_SIZE; i++) {
+            getChildren().add(new Spike(i*40, Config.APP_H - 40 - 40));
         }
     }
 }
