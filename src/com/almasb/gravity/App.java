@@ -106,8 +106,8 @@ public class App extends GameEnvironment {
                 new Text("WASD - gravity defying movement"),
                 new Text("G - alter gravity"),
                 new Text("Q - Force 'pull'"),
-                new Text("E - Force 'push"),
-                debug);
+                new Text("E - Force 'push")
+                );
 
         return vbox;
     }

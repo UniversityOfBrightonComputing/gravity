@@ -38,39 +38,62 @@ public class Level extends Group {
     private void parse() {
         createScreenBounds();
         //createSpikes();
+
         for (int i = 0; i < Config.APP_H / Config.BLOCK_SIZE; i++) {
+            int x = -1, y = -1, w = 0;
+
             for (int j = 0; j < Config.APP_W / Config.BLOCK_SIZE; j++) {
+                if (grid[j][i] == PLATFORM) {
+                    if (w == 0) {
+                        x = j * 40;
+                        y = i * 40;
+                        w = 40;
+                    }
+                    else {
+                        w += 40;
+                    }
+                }
+                else {
+                    if (w != 0) {
+                        getChildren().add(new Platform(x, y, w, 40));
+                        w = 0;
+                    }
+                }
+
                 switch (grid[j][i]) {
-                    case PLATFORM:
-                        getChildren().add(new Platform(j*40, i*40));
-                        break;
                     case ENEMY:
                         getChildren().add(new Enemy(j*40, i*40));
                         break;
-                    case PLAYER:
-                        // TODO: special case we still need player back in the app
-                        //getChildren().add(new Player(j*40, i*40));
-                        break;
                 }
+            }
+
+            if (w != 0) {
+                getChildren().add(new Platform(x, y, w, 40));
+                w = 0;
             }
         }
     }
 
     private void createScreenBounds() {
-        for (int i = 0; i < Config.APP_H / Config.BLOCK_SIZE; i++) {
-            getChildren().add(new Platform(-40, i*40));
-            getChildren().add(new Platform(Config.APP_W, i*40));
-        }
+        //        for (int i = 0; i < Config.APP_H / Config.BLOCK_SIZE; i++) {
+        //            getChildren().add(new Platform(-40, i*40));
+        //            getChildren().add(new Platform(Config.APP_W, i*40));
+        //        }
+        //
+        //        for (int i = 0; i < Config.APP_W / Config.BLOCK_SIZE; i++) {
+        //            getChildren().add(new Platform(i*40, -40));
+        //            getChildren().add(new Platform(i*40, Config.APP_H - 40));
+        //        }
 
-        for (int i = 0; i < Config.APP_W / Config.BLOCK_SIZE; i++) {
-            getChildren().add(new Platform(i*40, -40));
-            getChildren().add(new Platform(i*40, Config.APP_H - 40));
-        }
+        getChildren().add(new Platform(0, 0, Config.APP_W, Config.BLOCK_SIZE));
+        getChildren().add(new Platform(0, Config.APP_H - 40 - 40, Config.APP_W, Config.BLOCK_SIZE));
+        getChildren().add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+        getChildren().add(new Platform(Config.APP_W - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
     }
 
     private void createSpikes() {
         for (int i = 0; i < Config.APP_W / Config.BLOCK_SIZE; i++) {
-            getChildren().add(new Spike(i*40, Config.APP_H - 40 - 40));
+            //getChildren().add(new Spike(i*40, Config.APP_H - 40 - 40));
         }
     }
 }

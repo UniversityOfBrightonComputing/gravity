@@ -7,13 +7,12 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
-
-import com.almasb.gravity.PhysicsGameObject.Type;
 
 public class Enemy extends PhysicsGameObject {
 
@@ -33,10 +32,15 @@ public class Enemy extends PhysicsGameObject {
     // debug
     private DropShadow drop = new DropShadow(3, Color.BLACK);
 
+    private ImageView sprite;
+
     public Enemy(float x, float y) {
-        super(x, y, 40, 40, BodyType.DYNAMIC, Config.Image.ENEMY);
+        super(x, y, 40, 40, BodyType.DYNAMIC);
         this.body.setUserData(this);
+        sprite = new ImageView(Config.Image.ENEMY);
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
+
+        getChildren().add(sprite);
 
         drop.setInput(new Glow());
     }

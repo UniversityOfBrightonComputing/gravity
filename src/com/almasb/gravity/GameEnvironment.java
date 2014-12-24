@@ -89,8 +89,9 @@ public abstract class GameEnvironment extends Application {
         });
 
         primaryStage.setScene(scene);
-        primaryStage.setWidth(Config.APP_W);
-        primaryStage.setHeight(Config.APP_H);
+        primaryStage.setWidth(Config.APP_W + 6);
+        primaryStage.setHeight(Config.APP_H - 11);
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Gravity");
         primaryStage.show();
         timer.start();
