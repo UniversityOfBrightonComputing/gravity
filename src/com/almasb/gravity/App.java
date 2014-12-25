@@ -23,22 +23,17 @@ import org.jbox2d.dynamics.contacts.Contact;
 import com.almasb.gravity.Enemy.Direction;
 
 public class App extends GameEnvironment {
-    /**
-     * Elements in gameRoot are affected by camera control
-     * Elements in uiRoot are always on the screen and do not move
-     */
-    private Group gameRoot = new Group(), uiRoot = new Group();
-
-    private Level level = new Level(Config.Text.LEVEL0);
     private Player player = new Player(120, 400);
 
-    private World world = GameEnvironment.WORLD;
+    private World world = WORLD;
 
     final float SPEED = 10;
     float gravity = 8;
 
     @Override
     protected Parent createContent() {
+        initLevel(0);
+
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -57,12 +52,6 @@ public class App extends GameEnvironment {
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         });
 
-        level.gameObjects.add(player);
-
-        gameRoot.getChildren().addAll(level.physicsObjects);
-        gameRoot.getChildren().addAll(level.gameObjects);
-
-
         ProgressBar gBar = new ProgressBar();
         gBar.setTranslateX(50);
         gBar.setTranslateY(50);
@@ -75,11 +64,20 @@ public class App extends GameEnvironment {
         score.setFill(Color.GOLD);
         score.textProperty().bind(player.score.asString());
 
-        uiRoot.getChildren().addAll(score, gBar, createInfo());
+        UI_ROOT.getChildren().addAll(score, gBar, createInfo());
 
         Pane appRoot = new Pane();
-        appRoot.getChildren().addAll(gameRoot, uiRoot);
+        appRoot.getChildren().addAll(LEVEL_ROOT, UI_ROOT);
         return appRoot;
+    }
+
+    private void initLevel(int levelNumber) {
+        // TODO: clean level after new inited
+        Level level = new Level(Config.Text.LEVEL0);
+
+        level.gameObjects.add(player);
+        LEVEL_OBJECTS.setAll(level.gameObjects);
+        LEVEL_ROOT.getChildren().setAll(level.gameObjects);
     }
 
     Text debug = new Text();
@@ -128,26 +126,17 @@ public class App extends GameEnvironment {
 
         world.step(Config.TIME_STEP, 8, 3);
 
-        for (PhysicsGameObject obj : level.physicsObjects) {
-            obj.onUpdate();
+        for (GameObject obj : LEVEL_OBJECTS) {
+            obj.update();
         }
 
-        for (GameObject obj : level.gameObjects) {
-            //            if (player != obj) {
-            //                if (player.isColliding(obj)) {
-            //                    System.out.println("Collision");
-            //                }
-            //            }
+        // clean update list
+        LEVEL_OBJECTS.removeIf(obj -> !obj.isAlive());
 
-            obj.onUpdate();
-        }
+        // clean view list
+        LEVEL_ROOT.getChildren().removeIf(node -> !((GameObject)node).isAlive());
 
-        level.physicsObjects.removeIf(node -> !((GameObject)node).isAlive());
-        level.gameObjects.removeIf(node -> !((GameObject)node).isAlive());
-
-        gameRoot.getChildren().removeIf(node -> !((GameObject)node).isAlive());
         debug.setText("Body count: " + world.getBodyCount());
-        //debug.setText(player.body.getLinearVelocity() + " " + player.body.isAwake() + " " + player.body.getMass());
     }
 
     @Override
@@ -155,14 +144,14 @@ public class App extends GameEnvironment {
         switch (event.getCode()) {
             case SPACE:
                 Bullet b = new Bullet((float)player.getTranslateX() + 40, (float)player.getTranslateY(), Direction.RIGHT);
-                level.physicsObjects.add(b);
-                gameRoot.getChildren().add(b);
+                LEVEL_OBJECTS.add(b);
+                LEVEL_ROOT.getChildren().add(b);
                 break;
         }
 
         if (keys[PULL] && player.power.get() >= skillCosts[PULL]) {
             player.power.set(player.power.get() - skillCosts[PULL]);
-            for (PhysicsGameObject obj : level.physicsObjects) {
+            for (GameObject obj : LEVEL_OBJECTS) {
                 if (obj instanceof Enemy) {
                     ((Enemy)obj).setUnstable();
                 }
@@ -172,7 +161,7 @@ public class App extends GameEnvironment {
 
         if (keys[PUSH] && player.power.get() >= skillCosts[PUSH]) {
             player.power.set(player.power.get() - skillCosts[PUSH]);
-            for (PhysicsGameObject obj : level.physicsObjects) {
+            for (GameObject obj : LEVEL_OBJECTS) {
                 if (obj instanceof Enemy) {
                     ((Enemy)obj).setUnstable();
                 }
@@ -182,8 +171,5 @@ public class App extends GameEnvironment {
     }
 
     @Override
-    protected void handleKeyReleased(KeyEvent event) {
-        // TODO Auto-generated method stub
-
-    }
+    protected void handleKeyReleased(KeyEvent event) {}
 }

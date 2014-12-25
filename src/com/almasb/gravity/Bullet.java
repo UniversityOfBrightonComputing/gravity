@@ -7,7 +7,7 @@ import org.jbox2d.dynamics.BodyType;
 
 import com.almasb.gravity.Enemy.Direction;
 
-public class Bullet extends PhysicsGameObject {
+public class Bullet extends GameObject {
 
     private Direction direction;
 
@@ -27,15 +27,12 @@ public class Bullet extends PhysicsGameObject {
     public void onUpdate() {
         if (dying) {
             if (!bodyDestroyed) {
-                System.out.println("acall");
                 GameEnvironment.WORLD.destroyBody(body);
                 bodyDestroyed = true;
                 alive = false;
             }
             return;
         }
-
-        super.onUpdate();
     }
 
     @Override

@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
-public class Coin extends PhysicsGameObject {
+public class Coin extends GameObject {
 
     private ImageView sprite;
 
@@ -48,8 +48,6 @@ public class Coin extends PhysicsGameObject {
             }
             return;
         }
-
-        super.onUpdate();
     }
 
     @Override

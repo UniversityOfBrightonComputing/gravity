@@ -9,7 +9,7 @@ import javafx.scene.layout.Region;
 
 import org.jbox2d.dynamics.BodyType;
 
-public class Platform extends PhysicsGameObject {
+public class Platform extends GameObject {
 
     public Platform(float x, float y, float w, float h) {
         super(x, y, w, h, BodyType.STATIC);
@@ -35,6 +35,12 @@ public class Platform extends PhysicsGameObject {
 
     @Override
     public void onCollide(GameObject other) {
+
+    }
+
+    @Override
+    public void onUpdate() {
+        // TODO Auto-generated method stub
 
     }
 }

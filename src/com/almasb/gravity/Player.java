@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import org.jbox2d.collision.shapes.EdgeShape;
 import org.jbox2d.dynamics.BodyType;
 
-public class Player extends PhysicsGameObject {
+public class Player extends GameObject {
 
     public final SimpleIntegerProperty maxPower = new SimpleIntegerProperty(1000);
     public final SimpleIntegerProperty power = new SimpleIntegerProperty();
@@ -36,9 +36,6 @@ public class Player extends PhysicsGameObject {
 
     @Override
     public void onUpdate() {
-        super.onUpdate();
-
-
         power.set(Math.min(power.get() + powerRegen, maxPower.get()));
     }
 

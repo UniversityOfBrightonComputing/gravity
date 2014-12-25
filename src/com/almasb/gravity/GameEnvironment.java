@@ -1,11 +1,12 @@
 package com.almasb.gravity;
 
 import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -13,11 +14,52 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
 public abstract class GameEnvironment extends Application {
-
+    /**
+     * Physics simulation world
+     */
     public static final World WORLD = new World(new Vec2(0, -10));
+
+    /**
+     * Elements in gameRoot are affected by camera control
+     */
+    public static final Group LEVEL_ROOT = new Group();
+
+    /**
+     * Elements in uiRoot are always on the screen and do not move
+     */
+    public static final Group UI_ROOT = new Group();
+
+    /**
+     * Stores all game objects of the current level
+     */
+    public static final ObservableList<GameObject> LEVEL_OBJECTS = FXCollections.<GameObject>observableArrayList();
+
+    /**
+     * Used to dynamically add objects to already
+     * running game
+     *
+     * This registers the object for game updates,
+     * adds to the game view and creates a 'physics' body
+     *
+     * @param obj
+     *              object to add to game
+     * @return
+     *          physics body created
+     */
+    public static void addObject(GameObject obj) {
+        // add to view list
+        LEVEL_ROOT.getChildren().add(obj);
+
+        // add to update list
+        LEVEL_OBJECTS.add(obj);
+
+        // add to physics list
+        //return WORLD.createBody(obj.bodyDef);
+    }
 
     /**
      * User actions

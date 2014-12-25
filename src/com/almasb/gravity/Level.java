@@ -16,18 +16,7 @@ public class Level {
             POWERUP_G = 5;
 
     private int[][] grid;
-    /**
-     * Objects that participate in physics simulation
-     *
-     * Separating objects allow less load on the physics engine
-     * and checked lists remove the need for constant type check and cast
-     */
-    public final ObservableList<PhysicsGameObject> physicsObjects = FXCollections.<PhysicsGameObject>observableArrayList();
 
-    /**
-     * Objects that are not affected by physics like coins, powerups, etc
-     * We do our own fast collision detection on them
-     */
     public final ObservableList<GameObject> gameObjects = FXCollections.<GameObject>observableArrayList();
 
     public Level(List<String> lines) {
@@ -63,35 +52,35 @@ public class Level {
                 }
                 else {
                     if (w != 0) {
-                        physicsObjects.add(new Platform(x, y, w, 40));
+                        gameObjects.add(new Platform(x, y, w, 40));
                         w = 0;
                     }
                 }
 
                 switch (grid[j][i]) {
                     case ENEMY:
-                        physicsObjects.add(new Enemy(j*40, i*40));
+                        gameObjects.add(new Enemy(j*40, i*40));
                         break;
                     case COIN:
-                        physicsObjects.add(new Coin(j*40, i*40));
+                        gameObjects.add(new Coin(j*40, i*40));
                         break;
                 }
             }
 
             if (w != 0) {
-                physicsObjects.add(new Platform(x, y, w, 40));
+                gameObjects.add(new Platform(x, y, w, 40));
                 w = 0;
             }
         }
     }
 
     private void createScreenBounds() {
-        physicsObjects.add(new Platform(0, 0, grid.length * 40, Config.BLOCK_SIZE));
-        physicsObjects.add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
-        physicsObjects.add(new Platform(Config.APP_W - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+        gameObjects.add(new Platform(0, 0, grid.length * 40, Config.BLOCK_SIZE));
+        gameObjects.add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+        gameObjects.add(new Platform(Config.APP_W - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
     }
 
     private void createSpikes() {
-        physicsObjects.add(new Spike(40, Config.APP_H - 40 - 40, grid.length * 40 - 40 - 40, 40));
+        gameObjects.add(new Spike(40, Config.APP_H - 40 - 40, grid.length * 40 - 40 - 40, 40));
     }
 }

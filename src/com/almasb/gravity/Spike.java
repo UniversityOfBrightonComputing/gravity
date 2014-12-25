@@ -8,7 +8,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.Region;
 
-public class Spike extends PhysicsGameObject {
+public class Spike extends GameObject {
 
     public Spike(float x, float y, float w, float h) {
         super(x, y, w, h, BodyType.STATIC);
@@ -36,5 +36,12 @@ public class Spike extends PhysicsGameObject {
     @Override
     public void onCollide(GameObject other) {
         other.onDeath();
+    }
+
+
+    @Override
+    protected void onUpdate() {
+        // TODO Auto-generated method stub
+
     }
 }

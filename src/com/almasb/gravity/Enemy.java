@@ -14,7 +14,7 @@ import javafx.util.Duration;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 
-public class Enemy extends PhysicsGameObject {
+public class Enemy extends GameObject {
 
     public enum Direction {
         LEFT, RIGHT
@@ -51,8 +51,6 @@ public class Enemy extends PhysicsGameObject {
             }
             return;
         }
-
-        super.onUpdate();
 
         if (!body.isAwake() && Math.round(this.getRotate()) == 0) {
             isManipulated = false;
