@@ -18,8 +18,8 @@ public class Coin extends GameObject {
     private Timeline timeline;
 
     public Coin(float x, float y) {
-        super(x, y, 40, 40, BodyType.KINEMATIC);
-        this.body.setUserData(this);
+        super(x, y, 40, 40, BodyType.KINEMATIC, false);
+
         sprite = new ImageView(Config.Image.COIN);
         sprite.setFitHeight(40);
         sprite.setFitWidth(40);
@@ -40,20 +40,13 @@ public class Coin extends GameObject {
 
     @Override
     public void onUpdate() {
-        if (dying) {
-            if (!bodyDestroyed) {
-                GameEnvironment.WORLD.destroyBody(body);
-                bodyDestroyed = true;
-                alive = false;
-            }
-            return;
-        }
     }
 
     @Override
     public void onDeath() {
         dying = true;
         timeline.stop();
+        alive = false;
     }
 
     @Override

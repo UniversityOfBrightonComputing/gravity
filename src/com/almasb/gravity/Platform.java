@@ -12,8 +12,7 @@ import org.jbox2d.dynamics.BodyType;
 public class Platform extends GameObject {
 
     public Platform(float x, float y, float w, float h) {
-        super(x, y, w, h, BodyType.STATIC);
-        this.body.setUserData(this);
+        super(x, y, w, h, BodyType.STATIC, true);
 
         Region r = new Region();
         r.setPrefSize(w, h);

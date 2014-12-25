@@ -11,8 +11,7 @@ import javafx.scene.layout.Region;
 public class Spike extends GameObject {
 
     public Spike(float x, float y, float w, float h) {
-        super(x, y, w, h, BodyType.STATIC);
-        this.body.setUserData(this);
+        super(x, y, w, h, BodyType.STATIC, true);
 
         Region r = new Region();
         r.setPrefSize(w, h);

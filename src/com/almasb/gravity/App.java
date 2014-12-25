@@ -2,6 +2,7 @@ package com.almasb.gravity;
 
 import java.util.Iterator;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -36,8 +37,6 @@ public class App extends GameEnvironment {
     protected Parent createContent() {
         initLevel(0);
 
-        Config.Audio.EXPLOSION.play();
-
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -56,9 +55,15 @@ public class App extends GameEnvironment {
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         });
 
+        ProgressBar hpBar = new ProgressBar();
+        hpBar.setTranslateX(50);
+        hpBar.setTranslateY(50);
+        hpBar.setStyle("-fx-accent: rgb(0, 255, 0);");
+        hpBar.progressProperty().bind(player.health.divide(10.0f));
+
         ProgressBar gBar = new ProgressBar();
         gBar.setTranslateX(50);
-        gBar.setTranslateY(50);
+        gBar.setTranslateY(75);
         gBar.progressProperty().bind(player.power.divide(player.maxPower.multiply(1.0f)));
 
         Text score = new Text();
@@ -68,16 +73,29 @@ public class App extends GameEnvironment {
         score.setFill(Color.GOLD);
         score.textProperty().bind(player.score.asString());
 
-        UI_ROOT.getChildren().addAll(score, gBar, createInfo());
+        UI_ROOT.getChildren().addAll(score, hpBar, gBar, createInfo());
 
         Pane appRoot = new Pane();
         appRoot.getChildren().addAll(LEVEL_ROOT, UI_ROOT);
         return appRoot;
     }
 
+    private ChangeListener<? super Number> playerMoveListener = null;
+
     private void initLevel(int levelNumber) {
+        if (playerMoveListener != null)
+            player.translateXProperty().removeListener(playerMoveListener);
+
         // TODO: clean level after new inited
         Level level = new Level(Config.Text.LEVEL0);
+
+        playerMoveListener = (obs, old, newValue) -> {
+            int offset = newValue.intValue();
+            if (offset > 640 && offset < level.getWidth() - 640) {
+                LEVEL_ROOT.setLayoutX(-offset + 640);
+            }
+        };
+        player.translateXProperty().addListener(playerMoveListener);
 
         level.gameObjects.add(player);
         LEVEL_OBJECTS.setAll(level.gameObjects);
@@ -133,6 +151,15 @@ public class App extends GameEnvironment {
 
         for (Iterator<GameObject> it = LEVEL_OBJECTS.iterator(); it.hasNext(); ) {
             GameObject obj = it.next();
+
+            if (!obj.isPhysicsSupported()) {
+                // do our own fast collision check
+                if (player.isColliding(obj)) {
+                    player.onCollide(obj);
+                    obj.onCollide(player);
+                }
+            }
+
             obj.update();
             if (!obj.isAlive()) {
                 it.remove();
@@ -167,8 +194,9 @@ public class App extends GameEnvironment {
             for (GameObject obj : LEVEL_OBJECTS) {
                 if (obj instanceof Enemy) {
                     ((Enemy)obj).setUnstable();
+                    obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(-30)));
                 }
-                obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(-30)));
+
             }
         }
 
@@ -177,8 +205,9 @@ public class App extends GameEnvironment {
             for (GameObject obj : LEVEL_OBJECTS) {
                 if (obj instanceof Enemy) {
                     ((Enemy)obj).setUnstable();
+                    obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(30)));
                 }
-                obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(30)));
+
             }
         }
     }

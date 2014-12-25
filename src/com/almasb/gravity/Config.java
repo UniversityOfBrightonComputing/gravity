@@ -48,9 +48,10 @@ public final class Config {
         public static javafx.scene.image.Image EXPLOSION;
         public static javafx.scene.image.Image SPIKE;
         public static javafx.scene.image.Image COIN;
+        public static javafx.scene.image.Image STONE;
 
         private static javafx.scene.image.Image loadImage(String path) throws Exception {
-            InputStream is = instance.getClass().getResourceAsStream(path);
+            InputStream is = instance.getClass().getResourceAsStream(IMAGES_ROOT + path);
             javafx.scene.image.Image img = new javafx.scene.image.Image(is);
             is.close();
             return img;
@@ -58,12 +59,13 @@ public final class Config {
 
         static {
             try {
-                PLAYER = loadImage(IMAGES_ROOT + "player1.png");
-                ENEMY = loadImage(IMAGES_ROOT + "enemy3.png");
-                PLATFORM = loadImage(IMAGES_ROOT + "platform.png");
-                EXPLOSION = loadImage(IMAGES_ROOT + "explosion.png");
-                SPIKE = loadImage(IMAGES_ROOT + "spike.png");
-                COIN = loadImage(IMAGES_ROOT + "coin.png");
+                PLAYER = loadImage("player1.png");
+                ENEMY = loadImage("enemy3.png");
+                PLATFORM = loadImage("platform.png");
+                EXPLOSION = loadImage("explosion.png");
+                SPIKE = loadImage("spike.png");
+                COIN = loadImage("coin.png");
+                STONE = loadImage("stone.png");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -115,7 +117,7 @@ public final class Config {
 
         static {
             try {
-                LEVEL0 = loadText(RESOURCES_ROOT + "levels/level0.txt");
+                LEVEL0 = loadText(RESOURCES_ROOT + "levels/level1.txt");
             }
             catch (Exception e) {
                 e.printStackTrace();

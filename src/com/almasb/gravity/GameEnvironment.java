@@ -41,17 +41,17 @@ public abstract class GameEnvironment extends Application {
 
     protected static ArrayList<GameObject> tmpList = new ArrayList<GameObject>();
 
+    // static Player
+
     /**
      * Used to dynamically add objects to already
      * running game
      *
      * This registers the object for game updates,
-     * adds to the game view and creates a 'physics' body
+     * adds to the game view
      *
      * @param obj
      *              object to add to game
-     * @return
-     *          physics body created
      */
     public static void addObject(GameObject obj) {
         tmpList.add(obj);

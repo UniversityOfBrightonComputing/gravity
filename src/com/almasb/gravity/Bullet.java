@@ -12,10 +12,10 @@ public class Bullet extends GameObject {
     private Direction direction;
 
     public Bullet(float x, float y, Vec2 velocity) {
-        super(x, y, 5, 1, BodyType.DYNAMIC);
+        super(x, y, 5, 1, BodyType.DYNAMIC, true);
         body.setBullet(true);
         body.setGravityScale(0.0f);
-        body.setUserData(this);
+
         //direction = dir;
 
         getChildren().add(new Rectangle(5, 1));

@@ -34,8 +34,8 @@ public class Enemy extends GameObject {
     private int hp = 4;
 
     public Enemy(float x, float y) {
-        super(x, y, 40, 40, BodyType.DYNAMIC);
-        this.body.setUserData(this);
+        super(x, y, 38, 38, BodyType.DYNAMIC, true);
+
         sprite = new ImageView(Config.Image.ENEMY);
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
@@ -109,6 +109,7 @@ public class Enemy extends GameObject {
         });
         t.play();
 
+        // TODO: volume
         Config.Audio.EXPLOSION.play();
     }
 
@@ -130,6 +131,14 @@ public class Enemy extends GameObject {
     public void onCollide(GameObject other) {
         if (other.getType() == Type.PLATFORM) {
             if (body.getLinearVelocity().abs().x > 50 || body.getLinearVelocity().y > 50) {
+                hp -= 2;
+                if (hp <= 0)
+                    onDeath();
+            }
+        }
+
+        if (other.getType() == Type.STONE) {
+            if (other.body.getLinearVelocity().abs().x > 20 || other.body.getLinearVelocity().y > 20) {
                 hp -= 2;
                 if (hp <= 0)
                     onDeath();

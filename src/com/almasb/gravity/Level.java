@@ -13,7 +13,8 @@ public class Level {
             ENEMY = 2,
             COIN = 3,
             POWERUP_HP = 4,
-            POWERUP_G = 5;
+            POWERUP_G = 5,
+            STONE = 6;
 
     private int[][] grid;
 
@@ -32,14 +33,17 @@ public class Level {
         parse();
     }
 
-    private void parse() {
-        createScreenBounds();
-        createSpikes();
+    public int getWidth() {
+        return grid.length * Config.BLOCK_SIZE;
+    }
 
-        for (int i = 0; i < Config.APP_H / Config.BLOCK_SIZE; i++) {
+    private void parse() {
+        createLevelBounds();
+
+        for (int i = 0; i < grid[0].length; i++) {
             int x = -1, y = -1, w = 0;
 
-            for (int j = 0; j < Config.APP_W / Config.BLOCK_SIZE; j++) {
+            for (int j = 0; j < grid.length; j++) {
                 if (grid[j][i] == PLATFORM) {
                     if (w == 0) {
                         x = j * 40;
@@ -64,6 +68,9 @@ public class Level {
                     case COIN:
                         gameObjects.add(new Coin(j*40, i*40));
                         break;
+                    case STONE:
+                        gameObjects.add(new Stone(j*40, i*40));
+                        break;
                 }
             }
 
@@ -74,13 +81,17 @@ public class Level {
         }
     }
 
-    private void createScreenBounds() {
+    private void createLevelBounds() {
+        // top
         gameObjects.add(new Platform(0, 0, grid.length * 40, Config.BLOCK_SIZE));
-        gameObjects.add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
-        gameObjects.add(new Platform(Config.APP_W - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
-    }
 
-    private void createSpikes() {
+        // left
+        gameObjects.add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+
+        // right
+        gameObjects.add(new Platform(grid.length * 40 - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+
+        // bot
         gameObjects.add(new Spike(40, Config.APP_H - 40 - 40, grid.length * 40 - 40 - 40, 40));
     }
 }
