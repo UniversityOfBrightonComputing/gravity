@@ -9,8 +9,11 @@ import org.jbox2d.dynamics.BodyType;
 
 public class Player extends PhysicsGameObject {
 
-    private final SimpleIntegerProperty maxPower = new SimpleIntegerProperty(1000);
-    private final SimpleIntegerProperty power = new SimpleIntegerProperty();
+    public final SimpleIntegerProperty maxPower = new SimpleIntegerProperty(1000);
+    public final SimpleIntegerProperty power = new SimpleIntegerProperty();
+
+    public final SimpleIntegerProperty score = new SimpleIntegerProperty();
+    public final SimpleIntegerProperty health = new SimpleIntegerProperty();
 
     private int powerRegen = 1;
 
@@ -24,6 +27,11 @@ public class Player extends PhysicsGameObject {
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
         getChildren().add(sprite);
+
+        health.addListener((obs, old, newValue) -> {
+            if (newValue.intValue() == 0)
+                onDeath();
+        });
     }
 
     @Override
@@ -34,17 +42,29 @@ public class Player extends PhysicsGameObject {
         power.set(Math.min(power.get() + powerRegen, maxPower.get()));
     }
 
-    public SimpleIntegerProperty maxPowerProperty() {
-        return maxPower;
-    }
-
-    public SimpleIntegerProperty powerProperty() {
-        return power;
-    }
-
     @Override
     public void onDeath() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public Type getType() {
+        return Type.PLAYER;
+    }
+
+    @Override
+    public void onCollide(GameObject other) {
+        switch (other.getType()) {
+            case BULLET:
+                health.set(health.get() - 1);
+                break;
+            case COIN:
+                score.set(score.get() + Config.SCORE_COIN);
+                break;
+            case POWERUP:
+                score.set(score.get() + Config.SCORE_POWERUP);
+                break;
+        }
     }
 }

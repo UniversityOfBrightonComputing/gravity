@@ -9,8 +9,6 @@ import javafx.scene.layout.Region;
 
 import org.jbox2d.dynamics.BodyType;
 
-import com.almasb.gravity.PhysicsGameObject.Type;
-
 public class Platform extends PhysicsGameObject {
 
     public Platform(float x, float y, float w, float h) {
@@ -27,6 +25,16 @@ public class Platform extends PhysicsGameObject {
     @Override
     public void onDeath() {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Type getType() {
+        return Type.PLATFORM;
+    }
+
+    @Override
+    public void onCollide(GameObject other) {
 
     }
 }

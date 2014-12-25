@@ -30,10 +30,14 @@ public final class Config {
     public static final int SECOND = 60;
     public static final float TIME_STEP = 1.0f / SECOND;
 
-    public static final Font FONT = Font.font(16);
+    public static final Font FONT = Font.font(18);
 
     public static final String RESOURCES_ROOT = "/res/";
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
+
+    /* GAMEPLAY CONSTANTS */
+    public static final int SCORE_COIN = 100;
+    public static final int SCORE_POWERUP = 500;
 
     public static final class Image {
         public static javafx.scene.image.Image PLAYER;
@@ -41,6 +45,7 @@ public final class Config {
         public static javafx.scene.image.Image PLATFORM;
         public static javafx.scene.image.Image EXPLOSION;
         public static javafx.scene.image.Image SPIKE;
+        public static javafx.scene.image.Image COIN;
 
         private static javafx.scene.image.Image loadImage(String path) throws Exception {
             InputStream is = instance.getClass().getResourceAsStream(path);
@@ -56,6 +61,7 @@ public final class Config {
                 PLATFORM = loadImage(IMAGES_ROOT + "platform.png");
                 EXPLOSION = loadImage(IMAGES_ROOT + "explosion.png");
                 SPIKE = loadImage(IMAGES_ROOT + "spike.png");
+                COIN = loadImage(IMAGES_ROOT + "coin.png");
             }
             catch (Exception e) {
                 e.printStackTrace();

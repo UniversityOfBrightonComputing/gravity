@@ -12,6 +12,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
 
 public abstract class PhysicsGameObject extends GameObject {
@@ -20,15 +21,14 @@ public abstract class PhysicsGameObject extends GameObject {
     private Rectangle bbox;
 
     protected FixtureDef fixtureDef;
+    protected Fixture fixture;
     protected BodyDef bodyDef;
     protected Body body;
 
-    public enum Type {
-        PLAYER, PLATFORM, ENEMY
-    }
+    protected boolean bodyDestroyed = false;
 
     public PhysicsGameObject(float x, float y, float width, float height, BodyType type) {
-        super(x, y);
+        super(x, y, width, height);
 
         bbox = new Rectangle(width, height);
         bbox.setFill(null);
@@ -36,59 +36,19 @@ public abstract class PhysicsGameObject extends GameObject {
         getChildren().add(bbox);
 
         fixtureDef = new FixtureDef();
-
-        //        if (this instanceof Platform) {
-        //            Vec2[] vs = new Vec2[4];
-        //            vs[0] = new Vec2(toMeters(-width/2), toMeters(-height/2));
-        //            vs[1] = new Vec2(toMeters(width/2), toMeters(-height/2));
-        //            vs[2] = new Vec2(toMeters(width/2), toMeters(height/2));
-        //            vs[3] = new Vec2(toMeters(-width/2), toMeters(height/2));
-        //            ChainShape shape = new ChainShape();
-        //            shape.createLoop(vs, 4);
-        //
-        //            fixtureDef.shape = shape;
-        //        }
-        //        else {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(toMeters(width / 2), toMeters(height / 2));
 
         fixtureDef.shape = shape;
-        //}
-
         fixtureDef.density = 0.005f;
         fixtureDef.friction = 0.5f;
-
-
 
         bodyDef = new BodyDef();
         bodyDef.type = type;
         bodyDef.position.set(toMeters(x + width / 2), toMeters(Config.APP_H - (y + height / 2)));
 
         body = GameEnvironment.WORLD.createBody(bodyDef);
-        body.createFixture(fixtureDef);
-
-        //        Vec2 topLeft = new Vec2(0 - toMeters(width/2), toMeters(height/2));
-        //        Vec2 topRight = new Vec2(0 + toMeters(width/2), toMeters(height/2));
-        //        Vec2 botLeft = new Vec2(0 - toMeters(width/2), 0 - toMeters(height/2));
-        //        Vec2 botRight = new Vec2(0 + toMeters(width/2), 0 - toMeters(height/2));
-
-        //        EdgeShape shape = new EdgeShape();
-        //
-        //        shape.set(topLeft, topRight);
-        //        fixtureDef.shape = shape;
-        //        body.createFixture(fixtureDef);
-        //
-        //        shape.set(topRight, botRight);
-        //        fixtureDef.shape = shape;
-        //        body.createFixture(fixtureDef);
-        //
-        //        shape.set(botRight, botLeft);
-        //        fixtureDef.shape = shape;
-        //        body.createFixture(fixtureDef);
-        //
-        //        shape.set(botLeft, topLeft);
-        //        fixtureDef.shape = shape;
-        //        body.createFixture(fixtureDef);
+        fixture = body.createFixture(fixtureDef);
     }
 
     @Override

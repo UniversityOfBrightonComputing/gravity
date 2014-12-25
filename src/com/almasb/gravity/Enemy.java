@@ -16,7 +16,7 @@ import org.jbox2d.dynamics.BodyType;
 
 public class Enemy extends PhysicsGameObject {
 
-    private enum Direction {
+    public enum Direction {
         LEFT, RIGHT
     }
 
@@ -29,10 +29,9 @@ public class Enemy extends PhysicsGameObject {
 
     private boolean isManipulated = false;
 
-    // debug
-    private DropShadow drop = new DropShadow(3, Color.BLACK);
-
     private ImageView sprite;
+
+    private int hp = 4;
 
     public Enemy(float x, float y) {
         super(x, y, 40, 40, BodyType.DYNAMIC);
@@ -41,24 +40,19 @@ public class Enemy extends PhysicsGameObject {
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
         getChildren().add(sprite);
-
-        drop.setInput(new Glow());
     }
 
     @Override
     public void onUpdate() {
-        if (!alive || dying)
+        if (dying) {
+            if (!bodyDestroyed) {
+                GameEnvironment.WORLD.destroyBody(body);
+                bodyDestroyed = true;
+            }
             return;
+        }
 
         super.onUpdate();
-
-        // debug
-        if (body.isAwake()) {
-            sprite.setEffect(drop);
-        }
-        else {
-            sprite.setEffect(null);
-        }
 
         if (!body.isAwake() && Math.round(this.getRotate()) == 0) {
             isManipulated = false;
@@ -95,7 +89,7 @@ public class Enemy extends PhysicsGameObject {
     @Override
     public void onDeath() {
         dying = true;
-        GameEnvironment.WORLD.destroyBody(body);
+
         sprite.setImage(Config.Image.EXPLOSION);
         sprite.setViewport(new Rectangle2D(0, 0, 40, 40));
 
@@ -114,5 +108,27 @@ public class Enemy extends PhysicsGameObject {
 
     public void setUnstable() {
         isManipulated = true;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.ENEMY;
+    }
+
+    @Override
+    public void onCollide(GameObject other) {
+        if (other.getType() == Type.PLATFORM) {
+            if (body.getLinearVelocity().abs().x > 50 || body.getLinearVelocity().y > 50) {
+                hp -= 2;
+                if (hp <= 0)
+                    onDeath();
+            }
+        }
+
+        if (other.getType() == Type.BULLET) {
+            hp -= 2;
+            if (hp <= 0)
+                onDeath();
+        }
     }
 }
