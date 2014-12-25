@@ -58,6 +58,7 @@ public class Player extends GameObject {
                 break;
             case COIN:
                 score.set(score.get() + Config.SCORE_COIN);
+                Config.Audio.COIN.play();
                 break;
             case POWERUP:
                 score.set(score.get() + Config.SCORE_POWERUP);

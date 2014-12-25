@@ -52,6 +52,10 @@ public class Enemy extends GameObject {
             return;
         }
 
+        if (Math.round(this.getRotate()) != 0) {
+            isManipulated = true;
+        }
+
         if (!body.isAwake() && Math.round(this.getRotate()) == 0) {
             isManipulated = false;
         }
@@ -61,9 +65,11 @@ public class Enemy extends GameObject {
 
             tick++;
             if (tick == 2 * Config.SECOND) {
+                shoot(true);
                 direction = Direction.RIGHT;
             }
             else if (tick == 4 * Config.SECOND) {
+                shoot(false);
                 direction = Direction.LEFT;
                 tick = 0;
             }
@@ -102,6 +108,13 @@ public class Enemy extends GameObject {
             alive = false;
         });
         t.play();
+
+        Config.Audio.EXPLOSION.play();
+    }
+
+    private void shoot(boolean left) {
+        Bullet b = new Bullet((float)getTranslateX() + (left ? -10 : 42), (float)getTranslateY() + 20, left ? new Vec2(-25, 0) : new Vec2(25, 0));
+        GameEnvironment.addObject(b);
     }
 
     public void setUnstable() {

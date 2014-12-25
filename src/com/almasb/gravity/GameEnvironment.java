@@ -1,5 +1,6 @@
 package com.almasb.gravity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.animation.AnimationTimer;
@@ -38,6 +39,8 @@ public abstract class GameEnvironment extends Application {
      */
     public static final ObservableList<GameObject> LEVEL_OBJECTS = FXCollections.<GameObject>observableArrayList();
 
+    protected static ArrayList<GameObject> tmpList = new ArrayList<GameObject>();
+
     /**
      * Used to dynamically add objects to already
      * running game
@@ -51,11 +54,12 @@ public abstract class GameEnvironment extends Application {
      *          physics body created
      */
     public static void addObject(GameObject obj) {
+        tmpList.add(obj);
         // add to view list
-        LEVEL_ROOT.getChildren().add(obj);
+        //LEVEL_ROOT.getChildren().add(obj);
 
         // add to update list
-        LEVEL_OBJECTS.add(obj);
+        //LEVEL_OBJECTS.add(obj);
 
         // add to physics list
         //return WORLD.createBody(obj.bodyDef);

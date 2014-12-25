@@ -1,5 +1,7 @@
 package com.almasb.gravity;
 
+import java.util.Iterator;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -34,14 +36,16 @@ public class App extends GameEnvironment {
     protected Parent createContent() {
         initLevel(0);
 
+        Config.Audio.EXPLOSION.play();
+
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                Body body1 = contact.getFixtureA().getBody();
-                Body body2 = contact.getFixtureB().getBody();
+                GameObject obj1 = (GameObject) contact.getFixtureA().getBody().getUserData();
+                GameObject obj2 = (GameObject) contact.getFixtureB().getBody().getUserData();
 
-                ((GameObject)body1.getUserData()).onCollide((GameObject)body2.getUserData());
-                ((GameObject)body2.getUserData()).onCollide((GameObject)body1.getUserData());
+                obj1.onCollide(obj2);
+                obj2.onCollide(obj1);
             }
 
             @Override
@@ -124,17 +128,26 @@ public class App extends GameEnvironment {
             world.setGravity(new Vec2(0, -10));
         }
 
+        // TODO: only process and update objects in player's viewport
         world.step(Config.TIME_STEP, 8, 3);
 
-        for (GameObject obj : LEVEL_OBJECTS) {
+        for (Iterator<GameObject> it = LEVEL_OBJECTS.iterator(); it.hasNext(); ) {
+            GameObject obj = it.next();
             obj.update();
+            if (!obj.isAlive()) {
+                it.remove();
+                LEVEL_ROOT.getChildren().remove(obj);
+            }
         }
 
-        // clean update list
-        LEVEL_OBJECTS.removeIf(obj -> !obj.isAlive());
+        // add pending new objects
+        // add to view list
+        LEVEL_ROOT.getChildren().addAll(tmpList);
 
-        // clean view list
-        LEVEL_ROOT.getChildren().removeIf(node -> !((GameObject)node).isAlive());
+        // add to update list
+        LEVEL_OBJECTS.addAll(tmpList);
+
+        tmpList.clear();
 
         debug.setText("Body count: " + world.getBodyCount());
     }
@@ -143,9 +156,9 @@ public class App extends GameEnvironment {
     protected void handleKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
             case SPACE:
-                Bullet b = new Bullet((float)player.getTranslateX() + 40, (float)player.getTranslateY(), Direction.RIGHT);
-                LEVEL_OBJECTS.add(b);
-                LEVEL_ROOT.getChildren().add(b);
+                //                Bullet b = new Bullet((float)player.getTranslateX() + 40, (float)player.getTranslateY(), Direction.RIGHT);
+                //                LEVEL_OBJECTS.add(b);
+                //                LEVEL_ROOT.getChildren().add(b);
                 break;
         }
 

@@ -76,12 +76,12 @@ public abstract class GameObject extends Parent {
         return (float)meters * 20f;
     }
 
+    public boolean isAlive() {
+        return alive;
+    }
+
     protected abstract void onUpdate();
     public abstract void onDeath();
     public abstract void onCollide(GameObject other);
     public abstract Type getType();
-
-    public boolean isAlive() {
-        return alive;
-    }
 }

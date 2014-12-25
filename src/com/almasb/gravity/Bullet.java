@@ -11,16 +11,17 @@ public class Bullet extends GameObject {
 
     private Direction direction;
 
-    public Bullet(float x, float y, Direction dir) {
+    public Bullet(float x, float y, Vec2 velocity) {
         super(x, y, 5, 1, BodyType.DYNAMIC);
         body.setBullet(true);
         body.setGravityScale(0.0f);
         body.setUserData(this);
-        direction = dir;
+        //direction = dir;
 
         getChildren().add(new Rectangle(5, 1));
 
-        this.body.setLinearVelocity((new Vec2(direction == Direction.LEFT ? -25 : 25, 0)));
+        //this.body.setLinearVelocity((new Vec2(direction == Direction.LEFT ? -25 : 25, 0)));
+        body.setLinearVelocity(velocity);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
 
 public final class Config {
@@ -34,6 +35,7 @@ public final class Config {
 
     public static final String RESOURCES_ROOT = "/res/";
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
+    public static final String AUDIO_ROOT = RESOURCES_ROOT + "audio/";
 
     /* GAMEPLAY CONSTANTS */
     public static final int SCORE_COIN = 100;
@@ -62,6 +64,28 @@ public final class Config {
                 EXPLOSION = loadImage(IMAGES_ROOT + "explosion.png");
                 SPIKE = loadImage(IMAGES_ROOT + "spike.png");
                 COIN = loadImage(IMAGES_ROOT + "coin.png");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
+    }
+
+    public static final class Audio {
+
+        public static AudioClip EXPLOSION;
+        public static AudioClip COIN;
+
+        private static AudioClip loadAudio(String path) throws Exception {
+            AudioClip barNote = new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
+            return barNote;
+        }
+
+        static {
+            try {
+                EXPLOSION = loadAudio("explosion.wav");
+                COIN = loadAudio("coin.wav");
             }
             catch (Exception e) {
                 e.printStackTrace();
