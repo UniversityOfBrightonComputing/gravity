@@ -1,19 +1,21 @@
 package com.almasb.gravity;
 
-import javafx.animation.Interpolator;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
@@ -21,49 +23,104 @@ public class Intro extends Parent {
 
     private SequentialTransition timeline;
 
-    // TODO: something more interesting
+    private int i = 0, j = 0;
+
     public Intro() {
         Region bg = new Region();
         bg.setPrefSize(Config.APP_W, Config.APP_H);
         bg.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        Text text = new Text("ALMAS");
-        text.setFont(Font.font(72));
-        text.setFill(Color.WHITE);
-        text.setTranslateX(Config.APP_W / 2);
-        text.setTranslateY(Config.APP_H / 2);
+        Text textPresents = new Text("presents");
+        textPresents.setFont(Font.font("Courier", FontPosture.ITALIC, 72));
+        textPresents.setFill(Color.WHITE);
+        textPresents.setTranslateX(Config.APP_W / 2 - 150);
+        textPresents.setTranslateY(Config.APP_H / 2 + 70);
+        textPresents.setOpacity(0);
 
-        Text text2 = new Text("ABSOFT");
-        text2.setFont(Font.font(72));
-        text2.setFill(Color.WHITE);
-        text2.setTranslateX(Config.APP_W / 2);
-        text2.setTranslateY(Config.APP_H / 2);
-
-        getChildren().addAll(bg, text, text2);
-
-
-        TranslateTransition tt = new TranslateTransition(Duration.seconds(3), text);
-        tt.setToX(550);
-        tt.setInterpolator(Interpolator.EASE_OUT);
-
-        TranslateTransition tt2 = new TranslateTransition(Duration.seconds(1), text);
-        tt2.setToX(570);
-
-        TranslateTransition tt3 = new TranslateTransition(Duration.seconds(3), text);
-        tt3.setToX(450);
-        tt3.setInterpolator(Interpolator.EASE_OUT);
-
-        TranslateTransition tt4 = new TranslateTransition(Duration.seconds(1), text);
-        tt4.setToX(460);
-
-        TranslateTransition tt5 = new TranslateTransition(Duration.seconds(3), text);
-        tt5.setToX(410);
-        tt5.setInterpolator(Interpolator.EASE_OUT);
+        Text textLogo = new Text("GRAVITY");
+        textLogo.setFont(Config.Fonts.LOGO);
+        textLogo.setFill(Color.WHITE);
+        textLogo.setTranslateX(Config.APP_W / 2 - 200);
+        textLogo.setTranslateY(Config.APP_H / 2 + 200);
+        textLogo.setOpacity(0);
 
 
-        timeline = new SequentialTransition(tt, tt2, tt3, tt4, tt5);
-        timeline.play();
-        text2.setText(" BSOFT");
+        Word word = new Word("Alma", Font.font(null, FontPosture.ITALIC, 72));
+        Word word2 = new Word("ABS", Font.font(72));
+        Word word3 = new Word("oft", Font.font(null, FontPosture.ITALIC, 72));
+
+        word.getChildren().forEach(node -> node.setOpacity(0));
+        word3.getChildren().forEach(node -> node.setOpacity(0));
+
+        HBox hbox = new HBox(word, word2, word3);
+        hbox.setTranslateX(Config.APP_W / 2 - 200);
+        hbox.setTranslateY(Config.APP_H / 2 - 150);
+
+        getChildren().addAll(bg, hbox, textPresents, textLogo);
+
+        // 'presents' animation
+        FadeTransition fade = new FadeTransition(Duration.seconds(2), textPresents);
+        fade.setToValue(1.0);
+        fade.setAutoReverse(true);
+        fade.setCycleCount(2);
+
+        // logo animation
+        FadeTransition fade2 = new FadeTransition(Duration.seconds(2), textLogo);
+        fade2.setToValue(1);
+
+        ScaleTransition st = new ScaleTransition(Duration.seconds(1), textLogo);
+        st.setToX(1.3);
+        st.setToY(1.3);
+
+        ParallelTransition pt = new ParallelTransition(fade2, st);
+
+        timeline = new SequentialTransition(fade, pt);
+
+        // wait first
+        KeyFrame kf = new KeyFrame(Duration.seconds(1), event -> {
+            word.getChildren().forEach(node -> {
+                FadeTransition ft = new FadeTransition(Duration.seconds(5 - i), node);
+                i++;
+                ft.setToValue(1);
+                ft.play();
+            });
+            word3.getChildren().forEach(node -> {
+                FadeTransition ft = new FadeTransition(Duration.seconds(2 + j), node);
+                j++;
+                ft.setToValue(1);
+                ft.play();
+            });
+
+            Text t = ((Text)word2.getChildren().get(0));
+            t.setFont(Font.font(null, FontPosture.ITALIC, 72));
+            t.setText("s");
+            t.setOpacity(0);
+
+            FadeTransition ft = new FadeTransition(Duration.seconds(0.4), t);
+            ft.setToValue(1);
+            ft.play();
+        });
+
+        KeyFrame kf2 = new KeyFrame(Duration.seconds(6));
+
+        Timeline t = new Timeline(kf, kf2);
+        t.setOnFinished(event -> {
+            timeline.play();
+        });
+
+        t.play();
+    }
+
+    private static class Word extends HBox {
+        public Word(String word, Font f) {
+            for (char c : word.toCharArray()) {
+                Text letter = new Text(String.valueOf(c));
+                letter.setFont(f);
+                letter.setFill(Color.WHITE);
+
+                getChildren().add(letter);
+            }
+        }
     }
 
     public void setOnFinished(EventHandler<ActionEvent> handler) {

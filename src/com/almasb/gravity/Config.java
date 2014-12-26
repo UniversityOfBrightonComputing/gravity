@@ -1,6 +1,7 @@
 package com.almasb.gravity;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public final class Config {
     public static final int SECOND = 60;
     public static final float TIME_STEP = 1.0f / SECOND;
 
-    public static final Font FONT = Font.font(18);
+    public static Font FONT = Font.font(18);
 
     public static final String RESOURCES_ROOT = "/res/";
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
@@ -52,6 +53,27 @@ public final class Config {
     public static void setVolume(float v) {
         volume = v;
     }
+
+    public static final class Fonts {
+        public static Font LOGO;
+
+        private static Font loadFont(String path, double size) throws Exception {
+            try (InputStream is = instance.getClass().getResourceAsStream(RESOURCES_ROOT + "fonts/" + path)) {
+                return Font.loadFont(is, size);
+            }
+        }
+
+        static {
+            try {
+                LOGO = loadFont("spacebar.ttf", 72);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+        }
+    }
+
 
     public static final class Image {
         public static javafx.scene.image.Image PLAYER;
