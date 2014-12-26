@@ -90,6 +90,8 @@ public abstract class GameEnvironment extends Application {
 
     protected AnimationTimer timer;
 
+    private boolean gameStarted = false;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         timer = new AnimationTimer() {
@@ -112,8 +114,19 @@ public abstract class GameEnvironment extends Application {
         keyBindings.put(PULL, KeyCode.Q);
         keyBindings.put(PUSH, KeyCode.E);
 
-        Scene scene = new Scene(createContent());
-        scene.setOnKeyPressed(event -> {
+        Menu menu = new Menu();
+
+        Scene sceneMenu = new Scene(menu);
+        Scene sceneGame = new Scene(createContent());
+
+        sceneMenu.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE && gameStarted) {
+                primaryStage.setScene(sceneGame);
+                timer.start();
+            }
+        });
+
+        sceneGame.setOnKeyPressed(event -> {
             for (Integer action : keyBindings.keySet()) {
                 if (keyBindings.get(action) == event.getCode()) {
                     keys[action] = true;
@@ -121,9 +134,15 @@ public abstract class GameEnvironment extends Application {
                 }
             }
 
+            if (event.getCode() == KeyCode.ESCAPE) {
+                timer.stop();
+                primaryStage.setScene(sceneMenu);
+                return;
+            }
+
             handleKeyPressed(event);
         });
-        scene.setOnKeyReleased(event -> {
+        sceneGame.setOnKeyReleased(event -> {
             for (Integer action : keyBindings.keySet()) {
                 if (keyBindings.get(action) == event.getCode()) {
                     keys[action] = false;
@@ -134,10 +153,17 @@ public abstract class GameEnvironment extends Application {
             handleKeyReleased(event);
         });
 
+        menu.newGameEvent.addListener((obs, old, newValue) -> {
+            if (newValue.booleanValue()) {
+                gameStarted = true;
+                primaryStage.setScene(sceneGame);
+                timer.start();
+            }
+        });
+
         Intro intro = new Intro();
         intro.setOnFinished(event -> {
-            primaryStage.setScene(scene);
-            timer.start();
+            primaryStage.setScene(sceneMenu);
         });
 
         primaryStage.setScene(new Scene(intro));

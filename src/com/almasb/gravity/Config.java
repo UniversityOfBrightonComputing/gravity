@@ -1,12 +1,12 @@
 package com.almasb.gravity;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
 
@@ -44,15 +44,12 @@ public final class Config {
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage
-    private static float volume = 0.1f;
+    public static final SimpleDoubleProperty volume = new SimpleDoubleProperty();
 
-    public static float getVolume() {
-        return volume;
+    public static double getVolume() {
+        return volume.get();
     }
 
-    public static void setVolume(float v) {
-        volume = v;
-    }
 
     public static final class Fonts {
         public static Font LOGO;

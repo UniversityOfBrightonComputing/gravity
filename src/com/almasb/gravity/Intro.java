@@ -6,6 +6,7 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -74,7 +75,15 @@ public class Intro extends Parent {
 
         ParallelTransition pt = new ParallelTransition(fade2, st);
 
-        timeline = new SequentialTransition(fade, pt);
+        TranslateTransition tt = new TranslateTransition(Duration.seconds(2), textLogo);
+        tt.setToY(150);
+
+        FadeTransition fade3 = new FadeTransition(Duration.seconds(2), hbox);
+        fade3.setToValue(0);
+
+        ParallelTransition pt2 = new ParallelTransition(tt, fade3);
+
+        timeline = new SequentialTransition(fade, pt, pt2);
 
         // wait first
         KeyFrame kf = new KeyFrame(Duration.seconds(1), event -> {
@@ -101,7 +110,7 @@ public class Intro extends Parent {
             ft.play();
         });
 
-        KeyFrame kf2 = new KeyFrame(Duration.seconds(6));
+        KeyFrame kf2 = new KeyFrame(Duration.seconds(4));
 
         Timeline t = new Timeline(kf, kf2);
         t.setOnFinished(event -> {
