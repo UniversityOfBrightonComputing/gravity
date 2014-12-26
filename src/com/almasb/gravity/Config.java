@@ -41,6 +41,18 @@ public final class Config {
     public static final int SCORE_COIN = 100;
     public static final int SCORE_POWERUP = 500;
 
+    /* USER PREFERENCES (MODIFIABLE) */
+    // TODO: persistent storage
+    private static float volume = 0.1f;
+
+    public static float getVolume() {
+        return volume;
+    }
+
+    public static void setVolume(float v) {
+        volume = v;
+    }
+
     public static final class Image {
         public static javafx.scene.image.Image PLAYER;
         public static javafx.scene.image.Image ENEMY;
@@ -49,6 +61,7 @@ public final class Config {
         public static javafx.scene.image.Image SPIKE;
         public static javafx.scene.image.Image COIN;
         public static javafx.scene.image.Image STONE;
+        public static javafx.scene.image.Image POWERUP;
 
         private static javafx.scene.image.Image loadImage(String path) throws Exception {
             InputStream is = instance.getClass().getResourceAsStream(IMAGES_ROOT + path);
@@ -66,6 +79,7 @@ public final class Config {
                 SPIKE = loadImage("spike.png");
                 COIN = loadImage("coin.png");
                 STONE = loadImage("stone.png");
+                POWERUP = loadImage("powerup.png");
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -78,6 +92,7 @@ public final class Config {
 
         public static AudioClip EXPLOSION;
         public static AudioClip COIN;
+        public static AudioClip POWERUP;
 
         private static AudioClip loadAudio(String path) throws Exception {
             AudioClip barNote = new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
@@ -88,6 +103,7 @@ public final class Config {
             try {
                 EXPLOSION = loadAudio("explosion.wav");
                 COIN = loadAudio("coin.wav");
+                POWERUP = loadAudio("powerup.wav");
             }
             catch (Exception e) {
                 e.printStackTrace();

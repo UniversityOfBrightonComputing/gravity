@@ -134,12 +134,17 @@ public abstract class GameEnvironment extends Application {
             handleKeyReleased(event);
         });
 
-        primaryStage.setScene(scene);
+        Intro intro = new Intro();
+        intro.setOnFinished(event -> {
+            primaryStage.setScene(scene);
+            timer.start();
+        });
+
+        primaryStage.setScene(new Scene(intro));
         primaryStage.setWidth(Config.APP_W + 6);
         primaryStage.setHeight(Config.APP_H - 11);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Gravity");
         primaryStage.show();
-        timer.start();
     }
 }

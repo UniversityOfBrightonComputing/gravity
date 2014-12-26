@@ -109,8 +109,7 @@ public class Enemy extends GameObject {
         });
         t.play();
 
-        // TODO: volume
-        Config.Audio.EXPLOSION.play();
+        Config.Audio.EXPLOSION.play(Config.getVolume());
     }
 
     private void shoot(boolean left) {

@@ -2,6 +2,8 @@ package com.almasb.gravity;
 
 import java.util.List;
 
+import com.almasb.gravity.Powerup.PowerType;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -70,6 +72,12 @@ public class Level {
                         break;
                     case STONE:
                         gameObjects.add(new Stone(j*40, i*40));
+                        break;
+                    case POWERUP_HP:
+                        gameObjects.add(new Powerup(j*40, i*40, PowerType.HP));
+                        break;
+                    case POWERUP_G:
+                        gameObjects.add(new Powerup(j*40, i*40, PowerType.GRAVITY));
                         break;
                 }
             }

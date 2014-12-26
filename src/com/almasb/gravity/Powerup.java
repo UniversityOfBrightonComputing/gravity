@@ -1,45 +1,56 @@
 package com.almasb.gravity;
 
-import org.jbox2d.dynamics.BodyType;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
-public class Coin extends GameObject {
+import org.jbox2d.dynamics.BodyType;
+
+import com.almasb.gravity.GameObject.Type;
+
+public class Powerup extends GameObject {
+
+    public enum PowerType {
+        HP, GRAVITY
+    }
+
+    private PowerType type;
 
     private ImageView sprite;
 
     private Timeline timeline;
 
-    public Coin(float x, float y) {
+    public Powerup(float x, float y, PowerType type) {
         super(x, y, 40, 40, BodyType.KINEMATIC, false);
 
-        sprite = new ImageView(Config.Image.COIN);
+        this.type = type;
+
+        sprite = new ImageView(Config.Image.POWERUP);
         sprite.setFitHeight(40);
         sprite.setFitWidth(40);
-        sprite.setViewport(new Rectangle2D(0, 0, 128, 128));
+        sprite.setViewport(new Rectangle2D(0, 0, 81, 81));
 
         getChildren().add(sprite);
 
         SimpleIntegerProperty frameProperty = new SimpleIntegerProperty();
         frameProperty.addListener((obs, old, newValue) -> {
             if (newValue.intValue() > old.intValue())
-                sprite.setViewport(new Rectangle2D((newValue.intValue() % 8) * 128, (newValue.intValue() / 8) * 128, 128, 128));
+                sprite.setViewport(new Rectangle2D(newValue.intValue() * 81, (type.ordinal() + 1) * 81, 81, 81));
         });
 
-        timeline = new Timeline(new KeyFrame(Duration.seconds(2), new KeyValue(frameProperty, 23)));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(2), new KeyValue(frameProperty, 7)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
     @Override
-    public void onUpdate() {
+    protected void onUpdate() {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -52,14 +63,17 @@ public class Coin extends GameObject {
     @Override
     public void onCollide(GameObject other) {
         if (other.getType() == Type.PLAYER) {
-            Config.Audio.COIN.play(Config.getVolume());
+            Config.Audio.POWERUP.play(Config.getVolume());
             onDeath();
         }
     }
 
     @Override
     public Type getType() {
-        return Type.COIN;
+        return Type.POWERUP;
     }
 
+    public PowerType getPowerType() {
+        return type;
+    }
 }

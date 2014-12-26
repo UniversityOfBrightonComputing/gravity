@@ -7,6 +7,8 @@ import javafx.scene.image.ImageView;
 import org.jbox2d.collision.shapes.EdgeShape;
 import org.jbox2d.dynamics.BodyType;
 
+import com.almasb.gravity.Powerup.PowerType;
+
 public class Player extends GameObject {
 
     public final SimpleIntegerProperty maxPower = new SimpleIntegerProperty(1000);
@@ -59,10 +61,18 @@ public class Player extends GameObject {
                 break;
             case COIN:
                 score.set(score.get() + Config.SCORE_COIN);
-                Config.Audio.COIN.play();
                 break;
             case POWERUP:
                 score.set(score.get() + Config.SCORE_POWERUP);
+                PowerType type = ((Powerup)other).getPowerType();
+                switch (type) {
+                    case GRAVITY:
+                        power.set(Math.min(power.get() + 500, maxPower.get()));
+                        break;
+                    case HP:
+                        health.set(Math.min(health.get() + 5, 10));
+                        break;
+                }
                 break;
         }
     }
