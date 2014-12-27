@@ -20,7 +20,7 @@ public class Coin extends GameObject {
     public Coin(float x, float y) {
         super(x, y, 40, 40, BodyType.KINEMATIC, false);
 
-        sprite = new ImageView(Config.Image.COIN);
+        sprite = new ImageView(Config.Images.COIN);
         sprite.setFitHeight(40);
         sprite.setFitWidth(40);
         sprite.setViewport(new Rectangle2D(0, 0, 128, 128));

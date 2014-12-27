@@ -9,15 +9,22 @@ import java.util.List;
 import org.jbox2d.common.Vec2;
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
 
 public final class Config {
+    /**
+     * No outside instances
+     */
+    private Config() {}
 
-    private Config() {
-
-    }
-
+    /**
+     * The config singleton for convenient resource
+     * management since we don't need to use classloaders
+     * and we can retain same code for loading resources
+     * within IDE and .jar
+     */
     private static final Config instance = new Config();
 
     /* APP CONSTANTS */
@@ -36,9 +43,14 @@ public final class Config {
 
     public static Font FONT = Font.font(18);
 
+    /**
+     * A relative path from source directory
+     * to resources
+     */
     public static final String RESOURCES_ROOT = "/res/";
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
     public static final String AUDIO_ROOT = RESOURCES_ROOT + "audio/";
+    public static final String LEVELS_ROOT = RESOURCES_ROOT + "levels/";
 
     /* GAMEPLAY CONSTANTS */
     public static final int SCORE_COIN = 100;
@@ -54,6 +66,20 @@ public final class Config {
         return volume.get();
     }
 
+    static {
+        try {
+            Fonts.loadAll();
+            Images.loadAll();
+            Audio.loadAll();
+            Text.loadAll();
+        }
+        catch (Exception e) {
+            // shouldn't happen unless someone's tampering with the jar
+            System.out.println("Couldn't load game resource: " + e.getMessage());
+            System.out.println("Game will now exit");
+            System.exit(0);
+        }
+    }
 
     public static final class Fonts {
         public static Font LOGO;
@@ -64,50 +90,36 @@ public final class Config {
             }
         }
 
-        static {
-            try {
-                LOGO = loadFont("spacebar.ttf", 72);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+        private static void loadAll() throws Exception {
+            LOGO = loadFont("spacebar.ttf", 72);
         }
     }
 
+    public static final class Images {
+        public static Image PLAYER;
+        public static Image ENEMY;
+        public static Image PLATFORM;
+        public static Image EXPLOSION;
+        public static Image SPIKE;
+        public static Image COIN;
+        public static Image STONE;
+        public static Image POWERUP;
 
-    public static final class Image {
-        public static javafx.scene.image.Image PLAYER;
-        public static javafx.scene.image.Image ENEMY;
-        public static javafx.scene.image.Image PLATFORM;
-        public static javafx.scene.image.Image EXPLOSION;
-        public static javafx.scene.image.Image SPIKE;
-        public static javafx.scene.image.Image COIN;
-        public static javafx.scene.image.Image STONE;
-        public static javafx.scene.image.Image POWERUP;
-
-        private static javafx.scene.image.Image loadImage(String path) throws Exception {
-            InputStream is = instance.getClass().getResourceAsStream(IMAGES_ROOT + path);
-            javafx.scene.image.Image img = new javafx.scene.image.Image(is);
-            is.close();
-            return img;
+        private static Image loadImage(String path) throws Exception {
+            try (InputStream is = instance.getClass().getResourceAsStream(IMAGES_ROOT + path)) {
+                return new Image(is);
+            }
         }
 
-        static {
-            try {
-                PLAYER = loadImage("player1.png");
-                ENEMY = loadImage("enemy3.png");
-                PLATFORM = loadImage("platform.png");
-                EXPLOSION = loadImage("explosion.png");
-                SPIKE = loadImage("spike.png");
-                COIN = loadImage("coin.png");
-                STONE = loadImage("stone.png");
-                POWERUP = loadImage("powerup.png");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+        private static void loadAll() throws Exception {
+            PLAYER = loadImage("player1.png");
+            ENEMY = loadImage("enemy3.png");
+            PLATFORM = loadImage("platform.png");
+            EXPLOSION = loadImage("explosion.png");
+            SPIKE = loadImage("spike.png");
+            COIN = loadImage("coin.png");
+            STONE = loadImage("stone.png");
+            POWERUP = loadImage("powerup.png");
         }
     }
 
@@ -118,50 +130,37 @@ public final class Config {
         public static AudioClip POWERUP;
 
         private static AudioClip loadAudio(String path) throws Exception {
-            AudioClip barNote = new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
-            return barNote;
+            return new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
         }
 
-        static {
-            try {
-                EXPLOSION = loadAudio("explosion.wav");
-                COIN = loadAudio("coin.wav");
-                POWERUP = loadAudio("powerup.wav");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+        private static void loadAll() throws Exception {
+            EXPLOSION = loadAudio("explosion.wav");
+            COIN = loadAudio("coin.wav");
+            POWERUP = loadAudio("powerup.wav");
         }
     }
 
     public static final class Text {
         public static List<String> LEVEL0;
+        public static List<String> LEVEL1;
 
         private static List<String> loadText(String path) throws Exception {
             ArrayList<String> lines = new ArrayList<String>();
 
-            InputStream is = instance.getClass().getResourceAsStream(path);
-            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+            try (InputStream is = instance.getClass().getResourceAsStream(path);
+                    BufferedReader bf = new BufferedReader(new InputStreamReader(is))) {
 
-            String line = "";
-            while ((line = bf.readLine()) != null)
-                lines.add(line);
+                String line = "";
+                while ((line = bf.readLine()) != null)
+                    lines.add(line);
 
-            bf.close();
-            is.close();
-
-            return lines;
+                return lines;
+            }
         }
 
-        static {
-            try {
-                LEVEL0 = loadText(RESOURCES_ROOT + "levels/level1.txt");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
-            }
+        private static void loadAll() throws Exception {
+            LEVEL0 = loadText(RESOURCES_ROOT + "levels/level0.txt");
+            LEVEL1 = loadText(RESOURCES_ROOT + "levels/level1.txt");
         }
     }
 }

@@ -11,6 +11,8 @@ public class Bullet extends GameObject {
 
     private Direction direction;
 
+    // TODO: add max distance after each to die
+
     public Bullet(float x, float y, Vec2 velocity) {
         super(x, y, 5, 1, BodyType.DYNAMIC, true);
         body.setBullet(true);
@@ -28,7 +30,7 @@ public class Bullet extends GameObject {
     public void onUpdate() {
         if (dying) {
             if (!bodyDestroyed) {
-                GameEnvironment.WORLD.destroyBody(body);
+                GameEnvironment.getWorld().destroyBody(body);
                 bodyDestroyed = true;
                 alive = false;
             }

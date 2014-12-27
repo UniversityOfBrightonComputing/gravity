@@ -16,7 +16,7 @@ public class Platform extends GameObject {
 
         Region r = new Region();
         r.setPrefSize(w, h);
-        r.setBackground(new Background(new BackgroundImage(Config.Image.PLATFORM, null, null, null, null)));
+        r.setBackground(new Background(new BackgroundImage(Config.Images.PLATFORM, null, null, null, null)));
 
         getChildren().add(r);
     }

@@ -15,7 +15,7 @@ public class Spike extends GameObject {
 
         Region r = new Region();
         r.setPrefSize(w, h);
-        r.setBackground(new Background(new BackgroundImage(Config.Image.SPIKE, null, null, null, null)));
+        r.setBackground(new Background(new BackgroundImage(Config.Images.SPIKE, null, null, null, null)));
 
         getChildren().add(r);
     }

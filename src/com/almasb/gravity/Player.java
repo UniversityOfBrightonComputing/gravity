@@ -21,11 +21,11 @@ public class Player extends GameObject {
 
     private ImageView sprite;
 
-    public Player() {
-        super(0, 0, 38, 38, BodyType.DYNAMIC, true);
+    public Player(float x, float y) {
+        super(x, y, 38, 38, BodyType.DYNAMIC, true);
         this.body.setFixedRotation(true);
 
-        sprite = new ImageView(Config.Image.PLAYER);
+        sprite = new ImageView(Config.Images.PLAYER);
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
         getChildren().add(sprite);

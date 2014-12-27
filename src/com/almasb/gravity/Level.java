@@ -23,6 +23,8 @@ public class Level {
     public final ObservableList<GameObject> gameObjects = FXCollections.<GameObject>observableArrayList();
 
     public Level(List<String> lines) {
+        GameEnvironment.resetWorld();
+
         grid = new int[lines.get(0).length()][lines.size()];
 
         for (int i = 0; i < lines.size(); i++) {
@@ -80,9 +82,8 @@ public class Level {
                         gameObjects.add(new Powerup(j*40, i*40, PowerType.GRAVITY));
                         break;
                     case PLAYER:
-                        gameObjects.add(GameEnvironment.PLAYER);
-                        GameEnvironment.PLAYER.setTranslateX(j*40);
-                        GameEnvironment.PLAYER.setTranslateY(i*40);
+                        GameEnvironment.setPlayer(new Player(j*40, i*40));
+                        gameObjects.add(GameEnvironment.getPlayer());
                         break;
                 }
             }

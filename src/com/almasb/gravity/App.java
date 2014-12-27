@@ -27,10 +27,13 @@ import com.almasb.gravity.Enemy.Direction;
 import com.almasb.gravity.GameObject.Type;
 
 public class App extends GameEnvironment {
-    private World world = WORLD;
-    private Player player = PLAYER;
-
-    private Viewport viewport = new Viewport();
+    /**
+     * Just a convenient references for player and world
+     * the actual object is GameEnvironment.player/world
+     */
+    private World world;
+    private Player player;
+    //private Viewport viewport;
 
     final float SPEED = 10;
     float gravity = 8;
@@ -39,24 +42,12 @@ public class App extends GameEnvironment {
     protected Parent createContent() {
         initLevel(0);
 
-        world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact contact) {
-                GameObject obj1 = (GameObject) contact.getFixtureA().getBody().getUserData();
-                GameObject obj2 = (GameObject) contact.getFixtureB().getBody().getUserData();
+        Pane appRoot = new Pane();
+        appRoot.getChildren().addAll(LEVEL_ROOT, UI_ROOT);
+        return appRoot;
+    }
 
-                obj1.onCollide(obj2);
-                obj2.onCollide(obj1);
-            }
-
-            @Override
-            public void endContact(Contact contact) {}
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {}
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {}
-        });
-
+    private void createUI() {
         ProgressBar hpBar = new ProgressBar();
         hpBar.setTranslateX(50);
         hpBar.setTranslateY(50);
@@ -75,31 +66,39 @@ public class App extends GameEnvironment {
         score.setFill(Color.GOLD);
         score.textProperty().bind(player.score.asString());
 
-        UI_ROOT.getChildren().addAll(score, hpBar, gBar, createInfo());
-
-        Pane appRoot = new Pane();
-        appRoot.getChildren().addAll(LEVEL_ROOT, UI_ROOT);
-        return appRoot;
+        UI_ROOT.getChildren().setAll(score, hpBar, gBar, createInfo());
     }
 
     private ChangeListener<? super Number> playerMoveListener = null;
 
     private void initLevel(int levelNumber) {
-        if (playerMoveListener != null)
-            player.translateXProperty().removeListener(playerMoveListener);
+        Level level = new Level(levelNumber == 0 ? Config.Text.LEVEL0 : Config.Text.LEVEL1);
 
-        // TODO: clean old world
-        // TODO: clean level after new inited
-        Level level = new Level(Config.Text.LEVEL0);
+        world = getWorld();
+        player = getPlayer();
+        //viewport = new Viewport();
+        LEVEL_ROOT.setLayoutX(0);
+
+        createUI();
 
         playerMoveListener = (obs, old, newValue) -> {
             int offset = newValue.intValue();
             if (offset > 640 && offset < level.getWidth() - 640) {
                 LEVEL_ROOT.setLayoutX(-offset + 640);
-                viewport.setTranslateX(offset - 640);
+                //viewport.setTranslateX(offset - 640);
             }
         };
         player.translateXProperty().addListener(playerMoveListener);
+
+        player.health.addListener((obs, old, newValue) -> {
+            if (newValue.intValue() < 10) {
+                timer.stop();
+                // TODO: clean level
+                player.translateXProperty().removeListener(playerMoveListener);
+                initLevel(1);
+                timer.start();
+            }
+        });
 
         LEVEL_OBJECTS.setAll(level.gameObjects);
         LEVEL_ROOT.getChildren().setAll(level.gameObjects);
@@ -160,14 +159,6 @@ public class App extends GameEnvironment {
                     player.onCollide(obj);
                     obj.onCollide(player);
                 }
-            }
-
-            // if object is visible to player
-            if (viewport.isColliding(obj)) {
-                obj.setActive(true);
-            }
-            else {
-                obj.setActive(false);
             }
 
             obj.update();

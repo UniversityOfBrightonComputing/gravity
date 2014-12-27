@@ -10,7 +10,7 @@ public class Stone extends GameObject {
     public Stone(float x, float y) {
         super(x, y, 40, 40, BodyType.DYNAMIC, true);
 
-        ImageView sprite = new ImageView(Config.Image.STONE);
+        ImageView sprite = new ImageView(Config.Images.STONE);
         sprite.setFitHeight(40);
         sprite.setFitWidth(40);
 

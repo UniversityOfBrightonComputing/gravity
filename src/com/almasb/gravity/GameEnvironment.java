@@ -14,29 +14,79 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
+import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 
 public abstract class GameEnvironment extends Application {
     /**
      * Physics simulation world
      */
-    public static final World WORLD = new World(Config.DEFAULT_GRAVITY);
+    private static World world;
+
+    public static World getWorld() {
+        return world;
+    }
+
+    public static World resetWorld() {
+        // clean up first
+        if (world != null) {
+            Body body = world.getBodyList();
+            while (body != null) {
+                Body nextBody = body.getNext();
+                world.destroyBody(body);
+                body = nextBody;
+            }
+        }
+
+        world = new World(Config.DEFAULT_GRAVITY);
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                GameObject obj1 = (GameObject) contact.getFixtureA().getBody().getUserData();
+                GameObject obj2 = (GameObject) contact.getFixtureB().getBody().getUserData();
+
+                obj1.onCollide(obj2);
+                obj2.onCollide(obj1);
+            }
+
+            @Override
+            public void endContact(Contact contact) {}
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {}
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {}
+        });
+
+        return world;
+    }
 
     /**
-     * Player
+     * Player instance
      */
-    public static final Player PLAYER = new Player();
+    private static Player player;
+
+    public static Player getPlayer() {
+        return player;
+    }
+
+    public static void setPlayer(Player p) {
+        player = p;
+    }
 
     /**
      * Stores objects for display
      * Elements in gameRoot are affected by camera control
      */
-    public static final Group LEVEL_ROOT = new Group();
+    protected static final Group LEVEL_ROOT = new Group();
 
     /**
      * Elements in uiRoot are always on the screen and do not move
      */
-    public static final Group UI_ROOT = new Group();
+    protected static final Group UI_ROOT = new Group();
 
     /**
      * Stores all game objects of the current level
@@ -46,7 +96,7 @@ public abstract class GameEnvironment extends Application {
      * contains same references but having this typechecked saves
      * from constant typecast during the loop
      */
-    public static final ObservableList<GameObject> LEVEL_OBJECTS = FXCollections.<GameObject>observableArrayList();
+    protected static final ObservableList<GameObject> LEVEL_OBJECTS = FXCollections.<GameObject>observableArrayList();
 
     /**
      * Stores objects to be added to the game during next loop cycle

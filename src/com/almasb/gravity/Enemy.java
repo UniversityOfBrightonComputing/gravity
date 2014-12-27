@@ -36,7 +36,7 @@ public class Enemy extends GameObject {
     public Enemy(float x, float y) {
         super(x, y, 38, 38, BodyType.DYNAMIC, true);
 
-        sprite = new ImageView(Config.Image.ENEMY);
+        sprite = new ImageView(Config.Images.ENEMY);
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
         getChildren().add(sprite);
@@ -46,7 +46,7 @@ public class Enemy extends GameObject {
     public void onUpdate() {
         if (dying) {
             if (!bodyDestroyed) {
-                GameEnvironment.WORLD.destroyBody(body);
+                GameEnvironment.getWorld().destroyBody(body);
                 bodyDestroyed = true;
             }
             return;
@@ -94,7 +94,7 @@ public class Enemy extends GameObject {
     public void onDeath() {
         dying = true;
 
-        sprite.setImage(Config.Image.EXPLOSION);
+        sprite.setImage(Config.Images.EXPLOSION);
         sprite.setViewport(new Rectangle2D(0, 0, 40, 40));
 
         SimpleIntegerProperty frameProperty = new SimpleIntegerProperty();
