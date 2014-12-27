@@ -25,13 +25,13 @@ public class Powerup extends GameObject {
     private Timeline timeline;
 
     public Powerup(float x, float y, PowerType type) {
-        super(x, y, 40, 40, BodyType.KINEMATIC, false);
+        super(x, y, Config.BLOCK_SIZE, Config.BLOCK_SIZE, BodyType.KINEMATIC, false);
 
         this.type = type;
 
         sprite = new ImageView(Config.Images.POWERUP);
-        sprite.setFitHeight(40);
-        sprite.setFitWidth(40);
+        sprite.setFitHeight(Config.BLOCK_SIZE);
+        sprite.setFitWidth(Config.BLOCK_SIZE);
         sprite.setViewport(new Rectangle2D(0, 0, 81, 81));
 
         getChildren().add(sprite);

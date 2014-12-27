@@ -8,11 +8,11 @@ import org.jbox2d.dynamics.BodyType;
 public class Stone extends GameObject {
 
     public Stone(float x, float y) {
-        super(x, y, 40, 40, BodyType.DYNAMIC, true);
+        super(x, y, Config.BLOCK_SIZE, Config.BLOCK_SIZE, BodyType.DYNAMIC, true);
 
         ImageView sprite = new ImageView(Config.Images.STONE);
-        sprite.setFitHeight(40);
-        sprite.setFitWidth(40);
+        sprite.setFitHeight(Config.BLOCK_SIZE);
+        sprite.setFitWidth(Config.BLOCK_SIZE);
 
         getChildren().add(sprite);
 

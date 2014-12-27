@@ -34,9 +34,11 @@ public class Enemy extends GameObject {
     private int hp = 4;
 
     public Enemy(float x, float y) {
-        super(x, y, 38, 38, BodyType.DYNAMIC, true);
+        super(x, y, Config.BLOCK_SIZE - 2, Config.BLOCK_SIZE - 2, BodyType.DYNAMIC, true);
 
         sprite = new ImageView(Config.Images.ENEMY);
+        sprite.setFitHeight(Config.BLOCK_SIZE);
+        sprite.setFitWidth(Config.BLOCK_SIZE);
         sprite.setViewport(new Rectangle2D(0, 120, 40, 40));
 
         getChildren().add(sprite);
@@ -113,7 +115,7 @@ public class Enemy extends GameObject {
     }
 
     private void shoot(boolean left) {
-        Bullet b = new Bullet((float)getTranslateX() + (left ? -10 : 42), (float)getTranslateY() + 20, left ? new Vec2(-25, 0) : new Vec2(25, 0));
+        Bullet b = new Bullet((float)getTranslateX() + (left ? -10 : Config.BLOCK_SIZE + 2), (float)getTranslateY() + Config.BLOCK_SIZE / 2, left ? new Vec2(-25, 0) : new Vec2(25, 0));
         GameEnvironment.addObject(b);
     }
 

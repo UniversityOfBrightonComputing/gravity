@@ -18,11 +18,11 @@ public class Coin extends GameObject {
     private Timeline timeline;
 
     public Coin(float x, float y) {
-        super(x, y, 40, 40, BodyType.KINEMATIC, false);
+        super(x, y, Config.BLOCK_SIZE, Config.BLOCK_SIZE, BodyType.KINEMATIC, false);
 
         sprite = new ImageView(Config.Images.COIN);
-        sprite.setFitHeight(40);
-        sprite.setFitWidth(40);
+        sprite.setFitHeight(Config.BLOCK_SIZE);
+        sprite.setFitWidth(Config.BLOCK_SIZE);
         sprite.setViewport(new Rectangle2D(0, 0, 128, 128));
 
         getChildren().add(sprite);

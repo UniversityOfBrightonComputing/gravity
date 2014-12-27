@@ -47,6 +47,7 @@ public class App extends GameEnvironment {
         return appRoot;
     }
 
+    // TODO: design UI
     private void createUI() {
         ProgressBar hpBar = new ProgressBar();
         hpBar.setTranslateX(50);
@@ -72,7 +73,7 @@ public class App extends GameEnvironment {
     private ChangeListener<? super Number> playerMoveListener = null;
 
     private void initLevel(int levelNumber) {
-        Level level = new Level(levelNumber == 0 ? Config.Text.LEVEL0 : Config.Text.LEVEL1);
+        Level level = new Level(Config.Text.LEVEL_DATA.get(levelNumber));
 
         world = getWorld();
         player = getPlayer();
@@ -83,8 +84,8 @@ public class App extends GameEnvironment {
 
         playerMoveListener = (obs, old, newValue) -> {
             int offset = newValue.intValue();
-            if (offset > 640 && offset < level.getWidth() - 640) {
-                LEVEL_ROOT.setLayoutX(-offset + 640);
+            if (offset > Config.APP_HALF_W && offset < level.getWidth() - Config.APP_HALF_W) {
+                LEVEL_ROOT.setLayoutX(-offset + Config.APP_HALF_W);
                 //viewport.setTranslateX(offset - 640);
             }
         };
@@ -106,6 +107,7 @@ public class App extends GameEnvironment {
 
     Text debug = new Text();
 
+    // TODO: remove
     private VBox createInfo() {
         VBox vbox = new VBox(10);
         vbox.setTranslateX(900);
@@ -141,6 +143,7 @@ public class App extends GameEnvironment {
         }
 
         if (keys[GRAVITY] && player.power.get() >= skillCosts[GRAVITY]) {
+            // TODO: only change gravity scale for an object not whole world
             player.power.set(player.power.get() - skillCosts[GRAVITY]);
             world.setGravity(new Vec2(0, gravity));
         }
@@ -186,6 +189,8 @@ public class App extends GameEnvironment {
             case SPACE:
                 break;
         }
+
+        // TODO: only affect those in viewport
 
         if (keys[PULL] && player.power.get() >= skillCosts[PULL]) {
             player.power.set(player.power.get() - skillCosts[PULL]);

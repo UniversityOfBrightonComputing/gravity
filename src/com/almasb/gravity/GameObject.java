@@ -96,11 +96,11 @@ public abstract class GameObject extends Parent {
     }
 
     protected float toMeters(double pixels) {
-        return (float)pixels * 0.05f;
+        return (float)pixels * 0.05f / Config.SCALE;
     }
 
     protected float toPixels(double meters) {
-        return (float)meters * 20f;
+        return (float)meters * 20f * Config.SCALE;
     }
 
     public boolean isAlive() {

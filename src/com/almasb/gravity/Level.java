@@ -35,6 +35,11 @@ public class Level {
         }
 
         parse();
+
+        //        for (GameObject obj : gameObjects) {
+        //            obj.setScaleX(Config.SCALE);
+        //            obj.setScaleY(Config.SCALE);
+        //        }
     }
 
     public int getWidth() {
@@ -50,46 +55,46 @@ public class Level {
             for (int j = 0; j < grid.length; j++) {
                 if (grid[j][i] == PLATFORM) {
                     if (w == 0) {
-                        x = j * 40;
-                        y = i * 40;
-                        w = 40;
+                        x = j * Config.BLOCK_SIZE;
+                        y = i * Config.BLOCK_SIZE;
+                        w = Config.BLOCK_SIZE;
                     }
                     else {
-                        w += 40;
+                        w += Config.BLOCK_SIZE;
                     }
                 }
                 else {
                     if (w != 0) {
-                        gameObjects.add(new Platform(x, y, w, 40));
+                        gameObjects.add(new Platform(x, y, w, Config.BLOCK_SIZE));
                         w = 0;
                     }
                 }
 
                 switch (grid[j][i]) {
                     case ENEMY:
-                        gameObjects.add(new Enemy(j*40, i*40));
+                        gameObjects.add(new Enemy(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         break;
                     case COIN:
-                        gameObjects.add(new Coin(j*40, i*40));
+                        gameObjects.add(new Coin(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         break;
                     case STONE:
-                        gameObjects.add(new Stone(j*40, i*40));
+                        gameObjects.add(new Stone(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         break;
                     case POWERUP_HP:
-                        gameObjects.add(new Powerup(j*40, i*40, PowerType.HP));
+                        gameObjects.add(new Powerup(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE, PowerType.HP));
                         break;
                     case POWERUP_G:
-                        gameObjects.add(new Powerup(j*40, i*40, PowerType.GRAVITY));
+                        gameObjects.add(new Powerup(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE, PowerType.GRAVITY));
                         break;
                     case PLAYER:
-                        GameEnvironment.setPlayer(new Player(j*40, i*40));
+                        GameEnvironment.setPlayer(new Player(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         gameObjects.add(GameEnvironment.getPlayer());
                         break;
                 }
             }
 
             if (w != 0) {
-                gameObjects.add(new Platform(x, y, w, 40));
+                gameObjects.add(new Platform(x, y, w, Config.BLOCK_SIZE));
                 w = 0;
             }
         }
@@ -97,15 +102,15 @@ public class Level {
 
     private void createLevelBounds() {
         // top
-        gameObjects.add(new Platform(0, 0, grid.length * 40, Config.BLOCK_SIZE));
+        gameObjects.add(new Platform(0, 0, grid.length * Config.BLOCK_SIZE, Config.BLOCK_SIZE));
 
         // left
-        gameObjects.add(new Platform(0, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+        gameObjects.add(new Platform(0, Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE));
 
         // right
-        gameObjects.add(new Platform(grid.length * 40 - 40, 40, Config.BLOCK_SIZE, Config.APP_H - 40 - 40));
+        gameObjects.add(new Platform(grid.length * Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE));
 
         // bot
-        gameObjects.add(new Spike(40, Config.APP_H - 40 - 40, grid.length * 40 - 40 - 40, 40));
+        gameObjects.add(new Spike(Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE, grid.length * Config.BLOCK_SIZE - Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE));
     }
 }

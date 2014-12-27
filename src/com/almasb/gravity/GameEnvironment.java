@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -236,8 +237,9 @@ public abstract class GameEnvironment extends Application {
             primaryStage.setScene(sceneMenu);
         }
 
-        primaryStage.setWidth(Config.APP_W + 6);
-        primaryStage.setHeight(Config.APP_H - 11);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setWidth(Config.APP_W);
+        primaryStage.setHeight(Config.APP_H);
         primaryStage.setResizable(false);
         primaryStage.setTitle("Gravity");
         primaryStage.show();

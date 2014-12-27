@@ -29,10 +29,14 @@ public final class Config {
 
     /* APP CONSTANTS */
 
-    public static final int BLOCK_SIZE = 40;
+    public static final float SCALE = 1.0f;
 
-    public static final int APP_W = 32 * BLOCK_SIZE;
-    public static final int APP_H = 18 * BLOCK_SIZE;
+    public static final int BLOCK_SIZE = (int)(40 * SCALE);
+
+    public static final int APP_W = (int)(32 * BLOCK_SIZE);
+    public static final int APP_H = (int)(18 * BLOCK_SIZE);
+
+    public static final int APP_HALF_W = APP_W / 2;
 
     /**
      * How many frames equal to a second
@@ -51,12 +55,15 @@ public final class Config {
     public static final String IMAGES_ROOT = RESOURCES_ROOT + "images/";
     public static final String AUDIO_ROOT = RESOURCES_ROOT + "audio/";
     public static final String LEVELS_ROOT = RESOURCES_ROOT + "levels/";
+    public static final String FONTS_ROOT = RESOURCES_ROOT + "fonts/";
 
     /* GAMEPLAY CONSTANTS */
     public static final int SCORE_COIN = 100;
     public static final int SCORE_POWERUP = 500;
 
     public static final Vec2 DEFAULT_GRAVITY = new Vec2(0, -10);
+
+    public static final int MAX_LEVELS = 2;
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage
@@ -66,7 +73,7 @@ public final class Config {
         return volume.get();
     }
 
-    static {
+    public static void init() {
         try {
             Fonts.loadAll();
             Images.loadAll();
@@ -85,7 +92,7 @@ public final class Config {
         public static Font LOGO;
 
         private static Font loadFont(String path, double size) throws Exception {
-            try (InputStream is = instance.getClass().getResourceAsStream(RESOURCES_ROOT + "fonts/" + path)) {
+            try (InputStream is = instance.getClass().getResourceAsStream(FONTS_ROOT + path)) {
                 return Font.loadFont(is, size);
             }
         }
@@ -141,8 +148,10 @@ public final class Config {
     }
 
     public static final class Text {
-        public static List<String> LEVEL0;
-        public static List<String> LEVEL1;
+        public static final ArrayList< List<String> > LEVEL_DATA = new ArrayList< List<String> >();
+
+        //        public static List<String> LEVEL0;
+        //        public static List<String> LEVEL1;
 
         private static List<String> loadText(String path) throws Exception {
             ArrayList<String> lines = new ArrayList<String>();
@@ -159,8 +168,9 @@ public final class Config {
         }
 
         private static void loadAll() throws Exception {
-            LEVEL0 = loadText(RESOURCES_ROOT + "levels/level0.txt");
-            LEVEL1 = loadText(RESOURCES_ROOT + "levels/level1.txt");
+            for (int i = 0; i < MAX_LEVELS; i++) {
+                LEVEL_DATA.add(loadText(LEVELS_ROOT + "level" + i + ".txt"));
+            }
         }
     }
 }
