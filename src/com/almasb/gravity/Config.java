@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbox2d.common.Vec2;
-
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
+
+import org.jbox2d.common.Vec2;
 
 public final class Config {
     /**
@@ -28,15 +29,10 @@ public final class Config {
     private static final Config instance = new Config();
 
     /* APP CONSTANTS */
+    public static final int BLOCK_SIZE = 40;
 
-    public static final float SCALE = 1.0f;
-
-    public static final int BLOCK_SIZE = (int)(40 * SCALE);
-
-    public static final int APP_W = (int)(32 * BLOCK_SIZE);
-    public static final int APP_H = (int)(18 * BLOCK_SIZE);
-
-    public static final int APP_HALF_W = APP_W / 2;
+    public static final int APP_W = 32 * BLOCK_SIZE;
+    public static final int APP_H = 18 * BLOCK_SIZE;
 
     /**
      * How many frames equal to a second
@@ -67,7 +63,15 @@ public final class Config {
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage
-    public static final SimpleDoubleProperty volume = new SimpleDoubleProperty();
+    public static final SimpleIntegerProperty appWidth = new SimpleIntegerProperty(APP_W);
+    public static final SimpleIntegerProperty appHeight = new SimpleIntegerProperty(APP_H);
+    public static final SimpleDoubleProperty resolutionScale = new SimpleDoubleProperty(1.0);
+
+    public static final SimpleDoubleProperty volume = new SimpleDoubleProperty(0.5);
+
+    public static int getHalfWidth() {
+        return appWidth.get() / 2;
+    }
 
     public static double getVolume() {
         return volume.get();
@@ -75,6 +79,9 @@ public final class Config {
 
     public static void init() {
         try {
+            appWidth.bind(resolutionScale.multiply(APP_W));
+            appHeight.bind(resolutionScale.multiply(APP_H));
+
             Fonts.loadAll();
             Images.loadAll();
             Audio.loadAll();

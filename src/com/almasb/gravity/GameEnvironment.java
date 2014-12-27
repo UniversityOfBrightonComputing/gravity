@@ -12,8 +12,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.transform.Scale;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -236,6 +238,15 @@ public abstract class GameEnvironment extends Application {
         else if (debug == Debug.MENU) {
             primaryStage.setScene(sceneMenu);
         }
+
+        LEVEL_ROOT.getTransforms().add(new Scale(1, 1));
+        Config.resolutionScale.addListener((obs, old, newValue) -> {
+            primaryStage.setWidth((int)(Config.APP_W * newValue.floatValue()));
+            primaryStage.setHeight((int)(Config.APP_H * newValue.floatValue()));
+            primaryStage.centerOnScreen();
+
+            LEVEL_ROOT.getTransforms().set(0, new Scale(newValue.floatValue(), newValue.floatValue()));
+        });
 
         primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setWidth(Config.APP_W);

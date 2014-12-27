@@ -6,6 +6,7 @@ import com.almasb.gravity.Powerup.PowerType;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.transform.Scale;
 
 public class Level {
 
@@ -36,14 +37,22 @@ public class Level {
 
         parse();
 
+
+
         //        for (GameObject obj : gameObjects) {
-        //            obj.setScaleX(Config.SCALE);
-        //            obj.setScaleY(Config.SCALE);
+        //            Scale s = new Scale(2, 1, obj.getTranslateX(), 0);
+        //            obj.getTransforms().add(s);
+        //            //            obj.setScaleX(Config.SCALE);
+        //            //            obj.setScaleY(Config.SCALE);
         //        }
     }
 
     public int getWidth() {
         return grid.length * Config.BLOCK_SIZE;
+    }
+
+    public int getHeight() {
+        return grid[0].length * Config.BLOCK_SIZE;
     }
 
     private void parse() {
@@ -102,15 +111,15 @@ public class Level {
 
     private void createLevelBounds() {
         // top
-        gameObjects.add(new Platform(0, 0, grid.length * Config.BLOCK_SIZE, Config.BLOCK_SIZE));
+        gameObjects.add(new Platform(0, 0, getWidth(), Config.BLOCK_SIZE));
 
         // left
-        gameObjects.add(new Platform(0, Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE));
+        gameObjects.add(new Platform(0, Config.BLOCK_SIZE, Config.BLOCK_SIZE, getHeight() - Config.BLOCK_SIZE));
 
         // right
-        gameObjects.add(new Platform(grid.length * Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE));
+        gameObjects.add(new Platform(grid.length * Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE, Config.BLOCK_SIZE, getHeight() - Config.BLOCK_SIZE));
 
         // bot
-        gameObjects.add(new Spike(Config.BLOCK_SIZE, Config.APP_H - Config.BLOCK_SIZE, grid.length * Config.BLOCK_SIZE - Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE));
+        gameObjects.add(new Spike(Config.BLOCK_SIZE, getHeight() - Config.BLOCK_SIZE, getWidth() - Config.BLOCK_SIZE - Config.BLOCK_SIZE, Config.BLOCK_SIZE));
     }
 }

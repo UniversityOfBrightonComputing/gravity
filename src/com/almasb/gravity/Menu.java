@@ -18,10 +18,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
 public class Menu extends Parent {
-
-    //private MenuBox currentMenu = new MenuBox();
 
     private ObservableList<Node> menuRoot;
 
@@ -46,13 +45,6 @@ public class Menu extends Parent {
         itemResume.setOnMouseClicked(event -> {
             newGameEvent.set(true);
             itemResume.setEnabled(false);
-            //            if (!newGameEvent.get()) {
-            //                newGameEvent.set(true);
-            //                itemResume.setText("Resume");
-            //            }
-            //            else {
-            //                // go back to game
-            //            }
         });
         MenuItem itemContinue = new MenuItem("Continue");
         itemContinue.setEnabled(false);
@@ -101,18 +93,37 @@ public class Menu extends Parent {
         itemVideo.setMenuContent(new MenuContent() {
             @Override
             protected void createContent(VBox vbox) {
-                Text textHead = new Text("Here players will be able to change video settings");
+                Text textHead = new Text("Resolutions:");
                 textHead.setFont(Config.FONT);
                 textHead.setFill(Color.WHITE);
 
                 vbox.getChildren().add(textHead);
+
+                Screen screen = Screen.getPrimary();
+                int maxWidth = (int)screen.getBounds().getWidth();
+                int maxHeight = (int)screen.getBounds().getHeight();
+
+                for (int i = 0; i <= 5; i += 2) {
+                    float ratio = 1 + i*0.1f;
+                    VideoMode mode = new VideoMode((int)(Config.APP_W * ratio), (int)(Config.APP_H * ratio), ratio);
+
+                    if (mode.width <= maxWidth && mode.height <= maxHeight) {
+                        MenuItem textMode = new MenuItem(mode.width + " X " + mode.height);
+                        textMode.setOnMouseClicked(event -> {
+                            Config.resolutionScale.set(mode.ratio);
+                        });
+                        vbox.getChildren().add(textMode);
+                    }
+                }
+
+
             }
         });
         MenuItem itemAudio = new MenuItem("Audio");
         itemAudio.setMenuContent(new MenuContent() {
             @Override
             protected void createContent(VBox vbox) {
-                Slider slider = new Slider(0, 1.0, 0.5);
+                Slider slider = new Slider(0, 1.0, 0.0);
                 Config.volume.bind(slider.valueProperty());
 
                 Text textVolume = new Text();
@@ -252,6 +263,17 @@ public class Menu extends Parent {
             this.setOnMouseClicked(event -> {
                 switchMenuTo(menu);
             });
+        }
+    }
+
+    private static class VideoMode {
+        private int width, height;
+        private float ratio;
+
+        public VideoMode(int w, int h, float ratio) {
+            this.width = w;
+            this.height = h;
+            this.ratio = ratio;
         }
     }
 }

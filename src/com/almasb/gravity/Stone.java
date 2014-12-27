@@ -20,6 +20,11 @@ public class Stone extends GameObject {
             double x2 = -GameEnvironment.LEVEL_ROOT.getLayoutX() + event.getSceneX();
             double y2 = event.getSceneY();
 
+            x2 /= Config.resolutionScale.get();
+            y2 /= Config.resolutionScale.get();
+
+            //System.out.println(x2 + " " + y2);
+
             body.setLinearVelocity(new Vec2(toMeters(x2), toMeters(Config.APP_H - y2)).sub(body.getPosition()));
         });
     }

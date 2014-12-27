@@ -3,10 +3,6 @@ package com.almasb.gravity;
 import java.util.Iterator;
 
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyEvent;
@@ -14,17 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Scale;
 
-import org.jbox2d.callbacks.ContactImpulse;
-import org.jbox2d.callbacks.ContactListener;
-import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
-import org.jbox2d.dynamics.contacts.Contact;
-
-import com.almasb.gravity.Enemy.Direction;
-import com.almasb.gravity.GameObject.Type;
 
 public class App extends GameEnvironment {
     /**
@@ -68,6 +57,8 @@ public class App extends GameEnvironment {
         score.textProperty().bind(player.score.asString());
 
         UI_ROOT.getChildren().setAll(score, hpBar, gBar, createInfo());
+
+        //LEVEL_ROOT.getTransforms().add(new Scale(1.5, 1.5));
     }
 
     private ChangeListener<? super Number> playerMoveListener = null;
@@ -84,9 +75,9 @@ public class App extends GameEnvironment {
 
         playerMoveListener = (obs, old, newValue) -> {
             int offset = newValue.intValue();
-            if (offset > Config.APP_HALF_W && offset < level.getWidth() - Config.APP_HALF_W) {
-                LEVEL_ROOT.setLayoutX(-offset + Config.APP_HALF_W);
-                //viewport.setTranslateX(offset - 640);
+
+            if (offset > 640 && offset < level.getWidth() - 640) {
+                LEVEL_ROOT.setLayoutX((-offset + 640) * Config.resolutionScale.get());
             }
         };
         player.translateXProperty().addListener(playerMoveListener);
