@@ -31,7 +31,7 @@ public abstract class GameObject extends Parent {
 
     protected boolean bodyDestroyed = false;
 
-    protected boolean alive = true, dying = false;
+    protected boolean alive = true, dying = false, active = false;
 
     private boolean physicsSupported = false;
     protected float width, height;
@@ -85,6 +85,9 @@ public abstract class GameObject extends Parent {
     }
 
     public void update() {
+        if (!active && !dying)
+            return;
+
         if (physicsSupported) {
             bbox.setStroke(body.isAwake() ? Color.GOLD : Color.RED);
 
@@ -114,6 +117,34 @@ public abstract class GameObject extends Parent {
     public boolean isColliding(GameObject other) {
         return getTranslateX() + width >= other.getTranslateX() && getTranslateX() <= other.getTranslateX() + other.width
                 && getTranslateY() + height >= other.getTranslateY() && getTranslateY() <= other.getTranslateY() + other.height;
+    }
+
+    public void setActive(boolean b) {
+        // don't interfere with dying process
+        if (dying)
+            return;
+
+        if (!b && getType() == Type.BULLET) {
+            onDeath();
+            return;
+        }
+
+        active = b;
+        if (physicsSupported) {
+            if (getType() == Type.STONE) {
+                if (active) {
+                    body.setActive(true);
+                }
+                else {
+                    if (!body.isAwake()) {
+                        body.setActive(false);
+                    }
+                }
+            }
+            else {
+                body.setActive(active);
+            }
+        }
     }
 
     protected abstract void onUpdate();

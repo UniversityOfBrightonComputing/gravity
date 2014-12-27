@@ -14,17 +14,21 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
 public abstract class GameEnvironment extends Application {
     /**
      * Physics simulation world
      */
-    public static final World WORLD = new World(new Vec2(0, -10));
+    public static final World WORLD = new World(Config.DEFAULT_GRAVITY);
 
     /**
+     * Player
+     */
+    public static final Player PLAYER = new Player();
+
+    /**
+     * Stores objects for display
      * Elements in gameRoot are affected by camera control
      */
     public static final Group LEVEL_ROOT = new Group();
@@ -36,12 +40,18 @@ public abstract class GameEnvironment extends Application {
 
     /**
      * Stores all game objects of the current level
+     * for update
+     *
+     * This is practically a copy list of {@link #LEVEL_ROOT} that
+     * contains same references but having this typechecked saves
+     * from constant typecast during the loop
      */
     public static final ObservableList<GameObject> LEVEL_OBJECTS = FXCollections.<GameObject>observableArrayList();
 
+    /**
+     * Stores objects to be added to the game during next loop cycle
+     */
     protected static ArrayList<GameObject> tmpList = new ArrayList<GameObject>();
-
-    // static Player
 
     /**
      * Used to dynamically add objects to already
@@ -55,14 +65,6 @@ public abstract class GameEnvironment extends Application {
      */
     public static void addObject(GameObject obj) {
         tmpList.add(obj);
-        // add to view list
-        //LEVEL_ROOT.getChildren().add(obj);
-
-        // add to update list
-        //LEVEL_OBJECTS.add(obj);
-
-        // add to physics list
-        //return WORLD.createBody(obj.bodyDef);
     }
 
     /**
@@ -91,6 +93,12 @@ public abstract class GameEnvironment extends Application {
     protected AnimationTimer timer;
 
     private boolean gameStarted = false;
+
+    enum Debug {
+        GAME, MENU, INTRO
+    }
+
+    private Debug debug = Debug.GAME;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -161,12 +169,23 @@ public abstract class GameEnvironment extends Application {
             }
         });
 
-        Intro intro = new Intro();
-        intro.setOnFinished(event -> {
+        if (debug == Debug.INTRO) {
+            Intro intro = new Intro();
+            Scene sceneIntro = new Scene(intro);
+            intro.setOnFinished(event -> {
+                primaryStage.setScene(sceneMenu);
+            });
+            primaryStage.setScene(sceneIntro);
+        }
+        else if (debug == Debug.GAME) {
+            gameStarted = true;
+            primaryStage.setScene(sceneGame);
+            timer.start();
+        }
+        else if (debug == Debug.MENU) {
             primaryStage.setScene(sceneMenu);
-        });
+        }
 
-        primaryStage.setScene(new Scene(intro));
         primaryStage.setWidth(Config.APP_W + 6);
         primaryStage.setHeight(Config.APP_H - 11);
         primaryStage.setResizable(false);

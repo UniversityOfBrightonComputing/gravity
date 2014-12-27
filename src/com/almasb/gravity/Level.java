@@ -6,7 +6,6 @@ import com.almasb.gravity.Powerup.PowerType;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Group;
 
 public class Level {
 
@@ -16,7 +15,8 @@ public class Level {
             COIN = 3,
             POWERUP_HP = 4,
             POWERUP_G = 5,
-            STONE = 6;
+            STONE = 6,
+            PLAYER = 7;
 
     private int[][] grid;
 
@@ -78,6 +78,11 @@ public class Level {
                         break;
                     case POWERUP_G:
                         gameObjects.add(new Powerup(j*40, i*40, PowerType.GRAVITY));
+                        break;
+                    case PLAYER:
+                        gameObjects.add(GameEnvironment.PLAYER);
+                        GameEnvironment.PLAYER.setTranslateX(j*40);
+                        GameEnvironment.PLAYER.setTranslateY(i*40);
                         break;
                 }
             }

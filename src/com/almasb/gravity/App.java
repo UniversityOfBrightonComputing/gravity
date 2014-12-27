@@ -24,11 +24,13 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import com.almasb.gravity.Enemy.Direction;
+import com.almasb.gravity.GameObject.Type;
 
 public class App extends GameEnvironment {
-    private Player player = new Player(120, 400);
-
     private World world = WORLD;
+    private Player player = PLAYER;
+
+    private Viewport viewport = new Viewport();
 
     final float SPEED = 10;
     float gravity = 8;
@@ -86,6 +88,7 @@ public class App extends GameEnvironment {
         if (playerMoveListener != null)
             player.translateXProperty().removeListener(playerMoveListener);
 
+        // TODO: clean old world
         // TODO: clean level after new inited
         Level level = new Level(Config.Text.LEVEL0);
 
@@ -93,11 +96,11 @@ public class App extends GameEnvironment {
             int offset = newValue.intValue();
             if (offset > 640 && offset < level.getWidth() - 640) {
                 LEVEL_ROOT.setLayoutX(-offset + 640);
+                viewport.setTranslateX(offset - 640);
             }
         };
         player.translateXProperty().addListener(playerMoveListener);
 
-        level.gameObjects.add(player);
         LEVEL_OBJECTS.setAll(level.gameObjects);
         LEVEL_ROOT.getChildren().setAll(level.gameObjects);
     }
@@ -143,21 +146,28 @@ public class App extends GameEnvironment {
             world.setGravity(new Vec2(0, gravity));
         }
         else {
-            world.setGravity(new Vec2(0, -10));
+            world.setGravity(Config.DEFAULT_GRAVITY);
         }
 
-        // TODO: only process and update objects in player's viewport
         world.step(Config.TIME_STEP, 8, 3);
 
         for (Iterator<GameObject> it = LEVEL_OBJECTS.iterator(); it.hasNext(); ) {
             GameObject obj = it.next();
 
-            if (!obj.isPhysicsSupported()) {
+            if (!obj.isPhysicsSupported() && player != obj) {
                 // do our own fast collision check
                 if (player.isColliding(obj)) {
                     player.onCollide(obj);
                     obj.onCollide(player);
                 }
+            }
+
+            // if object is visible to player
+            if (viewport.isColliding(obj)) {
+                obj.setActive(true);
+            }
+            else {
+                obj.setActive(false);
             }
 
             obj.update();
@@ -183,9 +193,6 @@ public class App extends GameEnvironment {
     protected void handleKeyPressed(KeyEvent event) {
         switch (event.getCode()) {
             case SPACE:
-                //                Bullet b = new Bullet((float)player.getTranslateX() + 40, (float)player.getTranslateY(), Direction.RIGHT);
-                //                LEVEL_OBJECTS.add(b);
-                //                LEVEL_ROOT.getChildren().add(b);
                 break;
         }
 

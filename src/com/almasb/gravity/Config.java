@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbox2d.common.Vec2;
+
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
@@ -41,6 +43,8 @@ public final class Config {
     /* GAMEPLAY CONSTANTS */
     public static final int SCORE_COIN = 100;
     public static final int SCORE_POWERUP = 500;
+
+    public static final Vec2 DEFAULT_GRAVITY = new Vec2(0, -10);
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage

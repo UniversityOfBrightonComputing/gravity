@@ -21,8 +21,8 @@ public class Player extends GameObject {
 
     private ImageView sprite;
 
-    public Player(float x, float y) {
-        super(x, y, 38, 38, BodyType.DYNAMIC, true);
+    public Player() {
+        super(0, 0, 38, 38, BodyType.DYNAMIC, true);
         this.body.setFixedRotation(true);
 
         sprite = new ImageView(Config.Image.PLAYER);
