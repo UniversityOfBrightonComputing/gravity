@@ -12,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.transform.Scale;
@@ -233,6 +235,7 @@ public abstract class GameEnvironment extends Application {
             gameStarted = true;
             primaryStage.setScene(sceneGame);
             timer.start();
+            Config.Audio.test();
         }
         else if (debug == Debug.MENU) {
             primaryStage.setScene(sceneMenu);

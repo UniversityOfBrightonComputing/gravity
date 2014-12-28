@@ -10,6 +10,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 
 import org.jbox2d.common.Vec2;
@@ -71,6 +73,9 @@ public final class Config {
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage
+    public static final class Properties {
+        // TODO: move props here
+    }
     /**
      * Current app width
      */
@@ -105,6 +110,8 @@ public final class Config {
             Images.loadAll();
             Audio.loadAll();
             Text.loadAll();
+
+
         }
         catch (Exception e) {
             // shouldn't happen unless someone's tampering with the jar
@@ -156,11 +163,23 @@ public final class Config {
         }
     }
 
+    // TODO: bind volume to Config.volume
     public static final class Audio {
 
         public static AudioClip EXPLOSION;
         public static AudioClip COIN;
         public static AudioClip POWERUP;
+
+        public static Media testMedia;
+
+        public static MediaPlayer mediaPlayer;
+
+        public static void test() {
+            testMedia = new Media(instance.getClass().getResource(AUDIO_ROOT + "test.mp3").toExternalForm());
+            mediaPlayer = new MediaPlayer(testMedia);
+            mediaPlayer.setAutoPlay(true);
+
+        }
 
         private static AudioClip loadAudio(String path) throws Exception {
             return new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
@@ -170,6 +189,8 @@ public final class Config {
             EXPLOSION = loadAudio("explosion.wav");
             COIN = loadAudio("coin.wav");
             POWERUP = loadAudio("powerup.wav");
+
+
         }
     }
 
