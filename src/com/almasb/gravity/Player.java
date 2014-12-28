@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.ImageView;
 
-import org.jbox2d.collision.shapes.EdgeShape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 
 import com.almasb.gravity.Powerup.PowerType;
@@ -20,6 +20,8 @@ public class Player extends GameObject {
     private int powerRegen = 1;
 
     private ImageView sprite;
+
+    private Vec2 velocity = new Vec2();
 
     public Player(float x, float y) {
         super(x, y, Config.BLOCK_SIZE - 2, Config.BLOCK_SIZE - 2, BodyType.DYNAMIC, true);
@@ -37,6 +39,21 @@ public class Player extends GameObject {
             if (newValue.intValue() == 0)
                 onDeath();
         });
+    }
+
+    public void moveRight() {
+        velocity.set(Config.MAX_PLAYER_SPEED, body.getLinearVelocity().y);
+        body.setLinearVelocity(velocity);
+    }
+
+    public void moveLeft() {
+        velocity.set(-Config.MAX_PLAYER_SPEED, body.getLinearVelocity().y);
+        body.setLinearVelocity(velocity);
+    }
+
+    public void moveUp() {
+        velocity.set(body.getLinearVelocity().x, Config.MAX_PLAYER_SPEED);
+        body.setLinearVelocity(velocity);
     }
 
     @Override

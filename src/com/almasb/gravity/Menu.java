@@ -28,7 +28,9 @@ public class Menu extends Parent {
 
     public Menu() {
         Region bg = new Region();
-        bg.setPrefSize(Config.APP_W, Config.APP_H);
+        bg.prefWidthProperty().bind(Config.appWidth);
+        bg.prefHeightProperty().bind(Config.appHeight);
+
         bg.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         Text textLogo = new Text("GRAVITY");
@@ -115,8 +117,6 @@ public class Menu extends Parent {
                         vbox.getChildren().add(textMode);
                     }
                 }
-
-
             }
         });
         MenuItem itemAudio = new MenuItem("Audio");

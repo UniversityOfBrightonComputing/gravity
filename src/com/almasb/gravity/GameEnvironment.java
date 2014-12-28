@@ -12,7 +12,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.transform.Scale;
@@ -104,7 +103,7 @@ public abstract class GameEnvironment extends Application {
     /**
      * Stores objects to be added to the game during next loop cycle
      */
-    protected static ArrayList<GameObject> tmpList = new ArrayList<GameObject>();
+    protected static final ArrayList<GameObject> tmpList = new ArrayList<GameObject>();
 
     /**
      * Used to dynamically add objects to already

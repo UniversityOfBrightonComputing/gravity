@@ -6,7 +6,6 @@ import com.almasb.gravity.Powerup.PowerType;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.transform.Scale;
 
 public class Level {
 
@@ -36,15 +35,6 @@ public class Level {
         }
 
         parse();
-
-
-
-        //        for (GameObject obj : gameObjects) {
-        //            Scale s = new Scale(2, 1, obj.getTranslateX(), 0);
-        //            obj.getTransforms().add(s);
-        //            //            obj.setScaleX(Config.SCALE);
-        //            //            obj.setScaleY(Config.SCALE);
-        //        }
     }
 
     public int getWidth() {

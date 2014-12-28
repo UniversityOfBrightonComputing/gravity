@@ -10,8 +10,6 @@ import javafx.util.Duration;
 
 import org.jbox2d.dynamics.BodyType;
 
-import com.almasb.gravity.GameObject.Type;
-
 public class Powerup extends GameObject {
 
     public enum PowerType {

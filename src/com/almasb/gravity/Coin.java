@@ -1,15 +1,14 @@
 package com.almasb.gravity;
 
-import org.jbox2d.dynamics.BodyType;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+
+import org.jbox2d.dynamics.BodyType;
 
 public class Coin extends GameObject {
 
@@ -61,5 +60,4 @@ public class Coin extends GameObject {
     public Type getType() {
         return Type.COIN;
     }
-
 }

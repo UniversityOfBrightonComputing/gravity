@@ -1,8 +1,5 @@
 package com.almasb.gravity;
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.Region;

@@ -23,8 +23,6 @@ public class Stone extends GameObject {
             x2 /= Config.resolutionScale.get();
             y2 /= Config.resolutionScale.get();
 
-            //System.out.println(x2 + " " + y2);
-
             body.setLinearVelocity(new Vec2(toMeters(x2), toMeters(Config.APP_H - y2)).sub(body.getPosition()));
         });
     }

@@ -1,12 +1,14 @@
 package com.almasb.gravity;
 
-import org.jbox2d.dynamics.BodyType;
-
 public class Viewport extends GameObject {
 
     public Viewport() {
-        super(0, 0, Config.APP_W, Config.APP_H, null, false);
-        // TODO Auto-generated constructor stub
+        super(0, 0, Config.appWidth.get(), Config.appHeight.get(), null, false);
+
+        Config.resolutionScale.addListener((obs, old, newValue) -> {
+            this.width = Config.appWidth.get();
+            this.height = Config.appHeight.get();
+        });
     }
 
     @Override

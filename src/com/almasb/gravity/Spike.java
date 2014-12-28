@@ -1,12 +1,10 @@
 package com.almasb.gravity;
 
-import org.jbox2d.dynamics.BodyType;
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.Region;
+
+import org.jbox2d.dynamics.BodyType;
 
 public class Spike extends GameObject {
 

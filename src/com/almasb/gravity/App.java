@@ -10,10 +10,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
 
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
+
+import com.almasb.gravity.GameObject.Type;
 
 public class App extends GameEnvironment {
     /**
@@ -22,10 +22,9 @@ public class App extends GameEnvironment {
      */
     private World world;
     private Player player;
-    //private Viewport viewport;
+    private Viewport viewport = new Viewport();
 
-    final float SPEED = 10;
-    float gravity = 8;
+    private Level level;
 
     @Override
     protected Parent createContent() {
@@ -57,19 +56,18 @@ public class App extends GameEnvironment {
         score.textProperty().bind(player.score.asString());
 
         UI_ROOT.getChildren().setAll(score, hpBar, gBar, createInfo());
-
-        //LEVEL_ROOT.getTransforms().add(new Scale(1.5, 1.5));
     }
 
     private ChangeListener<? super Number> playerMoveListener = null;
 
     private void initLevel(int levelNumber) {
-        Level level = new Level(Config.Text.LEVEL_DATA.get(levelNumber));
+        level = new Level(Config.Text.LEVEL_DATA.get(levelNumber));
 
         world = getWorld();
         player = getPlayer();
-        //viewport = new Viewport();
+
         LEVEL_ROOT.setLayoutX(0);
+        viewport.setTranslateX(0);
 
         createUI();
 
@@ -78,6 +76,7 @@ public class App extends GameEnvironment {
 
             if (offset > 640 && offset < level.getWidth() - 640) {
                 LEVEL_ROOT.setLayoutX((-offset + 640) * Config.resolutionScale.get());
+                viewport.setTranslateX(offset - 640);
             }
         };
         player.translateXProperty().addListener(playerMoveListener);
@@ -85,7 +84,9 @@ public class App extends GameEnvironment {
         player.health.addListener((obs, old, newValue) -> {
             if (newValue.intValue() < 10) {
                 timer.stop();
-                // TODO: clean level
+
+                level.gameObjects.clear();
+
                 player.translateXProperty().removeListener(playerMoveListener);
                 initLevel(1);
                 timer.start();
@@ -101,7 +102,7 @@ public class App extends GameEnvironment {
     // TODO: remove
     private VBox createInfo() {
         VBox vbox = new VBox(10);
-        vbox.setTranslateX(900);
+        vbox.setTranslateX(800);
         vbox.setTranslateY(200);
 
         vbox.getChildren().addAll(
@@ -118,28 +119,42 @@ public class App extends GameEnvironment {
     protected void update() {
         if (keys[UP] && player.power.get() >= skillCosts[UP]) {
             player.power.set(player.power.get() - skillCosts[UP]);
-            player.body.setLinearVelocity(new Vec2(player.body.getLinearVelocity().x, SPEED));
+            player.moveUp();
         }
 
         if (keys[DOWN]) {
-            player.body.setLinearVelocity(new Vec2(player.body.getLinearVelocity().x, -SPEED));
         }
 
         if (keys[LEFT]) {
-            player.body.setLinearVelocity(new Vec2(-SPEED, player.body.getLinearVelocity().y));
+            player.moveLeft();
         }
 
         if (keys[RIGHT]) {
-            player.body.setLinearVelocity(new Vec2(SPEED, player.body.getLinearVelocity().y));
+            player.moveRight();
         }
 
         if (keys[GRAVITY] && player.power.get() >= skillCosts[GRAVITY]) {
-            // TODO: only change gravity scale for an object not whole world
+            for (GameObject obj : LEVEL_OBJECTS) {
+                if (obj.isPhysicsSupported()) {
+                    if (viewport.isColliding(obj)) {
+                        if (obj.getType() != Type.BULLET)
+                            obj.body.setGravityScale(-1);
+                    }
+                    else {
+                        obj.body.setGravityScale(1);
+                    }
+                }
+            }
+
             player.power.set(player.power.get() - skillCosts[GRAVITY]);
-            world.setGravity(new Vec2(0, gravity));
         }
         else {
-            world.setGravity(Config.DEFAULT_GRAVITY);
+            for (GameObject obj : LEVEL_OBJECTS) {
+                if (obj.isPhysicsSupported()) {
+                    if (obj.getType() != Type.BULLET)
+                        obj.body.setGravityScale(1);
+                }
+            }
         }
 
         world.step(Config.TIME_STEP, 8, 3);
@@ -154,6 +169,9 @@ public class App extends GameEnvironment {
                     obj.onCollide(player);
                 }
             }
+
+            if (obj.getType() == Type.BULLET && !viewport.isColliding(obj))
+                obj.onDeath();
 
             obj.update();
             if (!obj.isAlive()) {
@@ -171,7 +189,7 @@ public class App extends GameEnvironment {
 
         tmpList.clear();
 
-        debug.setText("Body count: " + world.getBodyCount());
+        //debug.setText("Body count: " + world.getBodyCount());
     }
 
     @Override
@@ -181,27 +199,23 @@ public class App extends GameEnvironment {
                 break;
         }
 
-        // TODO: only affect those in viewport
-
         if (keys[PULL] && player.power.get() >= skillCosts[PULL]) {
             player.power.set(player.power.get() - skillCosts[PULL]);
             for (GameObject obj : LEVEL_OBJECTS) {
-                if (obj instanceof Enemy) {
+                if (obj instanceof Enemy && viewport.isColliding(obj)) {
                     ((Enemy)obj).setUnstable();
                     obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(-30)));
                 }
-
             }
         }
 
         if (keys[PUSH] && player.power.get() >= skillCosts[PUSH]) {
             player.power.set(player.power.get() - skillCosts[PUSH]);
             for (GameObject obj : LEVEL_OBJECTS) {
-                if (obj instanceof Enemy) {
+                if (obj instanceof Enemy && viewport.isColliding(obj)) {
                     ((Enemy)obj).setUnstable();
                     obj.body.applyForceToCenter((obj.body.getPosition().sub(player.body.getPosition()).mul(30)));
                 }
-
             }
         }
     }

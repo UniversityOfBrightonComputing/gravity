@@ -31,7 +31,14 @@ public final class Config {
     /* APP CONSTANTS */
     public static final int BLOCK_SIZE = 40;
 
+    /**
+     * Default app width
+     */
     public static final int APP_W = 32 * BLOCK_SIZE;
+
+    /**
+     * Default app height
+     */
     public static final int APP_H = 18 * BLOCK_SIZE;
 
     /**
@@ -58,13 +65,25 @@ public final class Config {
     public static final int SCORE_POWERUP = 500;
 
     public static final Vec2 DEFAULT_GRAVITY = new Vec2(0, -10);
+    public static final float MAX_PLAYER_SPEED = 10.0f;
 
     public static final int MAX_LEVELS = 2;
 
     /* USER PREFERENCES (MODIFIABLE) */
     // TODO: persistent storage
+    /**
+     * Current app width
+     */
     public static final SimpleIntegerProperty appWidth = new SimpleIntegerProperty(APP_W);
+
+    /**
+     * Current app height
+     */
     public static final SimpleIntegerProperty appHeight = new SimpleIntegerProperty(APP_H);
+
+    /**
+     * Ratio of current screen size to default
+     */
     public static final SimpleDoubleProperty resolutionScale = new SimpleDoubleProperty(1.0);
 
     public static final SimpleDoubleProperty volume = new SimpleDoubleProperty(0.5);
