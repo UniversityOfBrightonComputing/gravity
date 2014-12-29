@@ -108,11 +108,33 @@ public class Enemy extends GameObject {
         });
         t.play();
 
-        Config.Audio.EXPLOSION.play(Config.getVolume());
+        Config.Audio.EXPLOSION.play();
     }
 
     private void shoot(boolean left) {
-        Bullet b = new Bullet((float)getTranslateX() + (left ? -10 : Config.BLOCK_SIZE + 2), (float)getTranslateY() + Config.BLOCK_SIZE / 2, left ? new Vec2(-25, 0) : new Vec2(25, 0));
+        Vec2 v = GameEnvironment.getPlayer().body.getPosition();
+
+        Vec2 dir = v.sub(body.getPosition());
+        Vec2 bulletV = new Vec2();
+
+        if (dir.x > 0 && direction == Direction.LEFT) {
+            bulletV.set(-25, 0);
+        }
+
+        if (dir.x < 0 && direction == Direction.LEFT) {
+            bulletV.set(dir);
+        }
+
+        if (dir.x < 0 && direction == Direction.RIGHT) {
+            bulletV.set(25, 0);
+        }
+
+        if (dir.x > 0 && direction == Direction.RIGHT) {
+            bulletV.set(dir);
+        }
+
+        Bullet b = new Bullet((float)getTranslateX() + (left ? -10 : Config.BLOCK_SIZE + 2), (float)getTranslateY() + Config.BLOCK_SIZE / 2,
+                bulletV);
         GameEnvironment.addObject(b);
     }
 

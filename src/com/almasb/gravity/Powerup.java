@@ -61,7 +61,7 @@ public class Powerup extends GameObject {
     @Override
     public void onCollide(GameObject other) {
         if (other.getType() == Type.PLAYER) {
-            Config.Audio.POWERUP.play(Config.getVolume());
+            Config.Audio.POWERUP.play();
             onDeath();
         }
     }

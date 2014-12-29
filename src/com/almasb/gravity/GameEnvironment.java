@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -121,6 +122,8 @@ public abstract class GameEnvironment extends Application {
         tmpList.add(obj);
     }
 
+    public static final SimpleBooleanProperty levelConditionsMet = new SimpleBooleanProperty();
+
     /**
      * User actions
      */
@@ -140,6 +143,7 @@ public abstract class GameEnvironment extends Application {
     protected int[] skillCosts = new int[LAST];
 
     protected abstract Parent createContent();
+    protected abstract void nextLevel();
     protected abstract void update();
     protected abstract void handleKeyPressed(KeyEvent event);
     protected abstract void handleKeyReleased(KeyEvent event);
@@ -152,7 +156,7 @@ public abstract class GameEnvironment extends Application {
         GAME, MENU, INTRO
     }
 
-    private Debug debug = Debug.GAME;
+    private Debug debug = Debug.INTRO;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -160,6 +164,10 @@ public abstract class GameEnvironment extends Application {
             @Override
             public void handle(long now) {
                 update();
+                if (levelConditionsMet.get()) {
+                    nextLevel();
+                    levelConditionsMet.set(false);
+                }
             }
         };
 
@@ -220,6 +228,7 @@ public abstract class GameEnvironment extends Application {
                 gameStarted = true;
                 primaryStage.setScene(sceneGame);
                 timer.start();
+                Config.Audio.test();
             }
         });
 

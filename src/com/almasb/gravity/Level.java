@@ -16,7 +16,8 @@ public class Level {
             POWERUP_HP = 4,
             POWERUP_G = 5,
             STONE = 6,
-            PLAYER = 7;
+            PLAYER = 7,
+            PORTAL = 8;
 
     private int[][] grid;
 
@@ -88,6 +89,9 @@ public class Level {
                     case PLAYER:
                         GameEnvironment.setPlayer(new Player(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         gameObjects.add(GameEnvironment.getPlayer());
+                        break;
+                    case PORTAL:
+                        gameObjects.add(new Portal(j*Config.BLOCK_SIZE, i*Config.BLOCK_SIZE));
                         break;
                 }
             }

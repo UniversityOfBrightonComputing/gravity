@@ -60,6 +60,17 @@ public class App extends GameEnvironment {
 
     private ChangeListener<? super Number> playerMoveListener = null;
 
+    @Override
+    protected void nextLevel() {
+        timer.stop();
+
+        level.gameObjects.clear();
+
+        player.translateXProperty().removeListener(playerMoveListener);
+        initLevel(1);
+        timer.start();
+    }
+
     private void initLevel(int levelNumber) {
         level = new Level(Config.Text.LEVEL_DATA.get(levelNumber));
 
@@ -80,18 +91,6 @@ public class App extends GameEnvironment {
             }
         };
         player.translateXProperty().addListener(playerMoveListener);
-
-        player.health.addListener((obs, old, newValue) -> {
-            if (newValue.intValue() < 10) {
-                timer.stop();
-
-                level.gameObjects.clear();
-
-                player.translateXProperty().removeListener(playerMoveListener);
-                initLevel(1);
-                timer.start();
-            }
-        });
 
         LEVEL_OBJECTS.setAll(level.gameObjects);
         LEVEL_ROOT.getChildren().setAll(level.gameObjects);
@@ -139,6 +138,8 @@ public class App extends GameEnvironment {
                     if (viewport.isColliding(obj)) {
                         if (obj.getType() != Type.BULLET)
                             obj.body.setGravityScale(-1);
+                        if (obj.getType() == Type.ENEMY)
+                            ((Enemy)obj).setUnstable();
                     }
                     else {
                         obj.body.setGravityScale(1);

@@ -14,7 +14,7 @@ import org.jbox2d.dynamics.FixtureDef;
 public abstract class GameObject extends Parent {
 
     public enum Type {
-        PLAYER, PLATFORM, ENEMY, COIN, POWERUP, BULLET, SPIKE, STONE
+        PLAYER, PLATFORM, ENEMY, COIN, POWERUP, BULLET, SPIKE, STONE, PORTAL, OBSTACLE
     }
 
     private Rectangle bbox;

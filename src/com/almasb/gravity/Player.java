@@ -93,6 +93,9 @@ public class Player extends GameObject {
                         break;
                 }
                 break;
+            case PORTAL:
+                GameEnvironment.levelConditionsMet.set(true);
+                break;
         }
     }
 }

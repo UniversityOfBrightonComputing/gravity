@@ -68,6 +68,7 @@ public final class Config {
 
     public static final Vec2 DEFAULT_GRAVITY = new Vec2(0, -10);
     public static final float MAX_PLAYER_SPEED = 10.0f;
+    public static final float MAX_BULLET_TICKS = 1000.0f;
 
     public static final int MAX_LEVELS = 2;
 
@@ -95,10 +96,6 @@ public final class Config {
 
     public static int getHalfWidth() {
         return appWidth.get() / 2;
-    }
-
-    public static double getVolume() {
-        return volume.get();
     }
 
     public static void init() {
@@ -163,7 +160,6 @@ public final class Config {
         }
     }
 
-    // TODO: bind volume to Config.volume
     public static final class Audio {
 
         public static AudioClip EXPLOSION;
@@ -177,20 +173,21 @@ public final class Config {
         public static void test() {
             testMedia = new Media(instance.getClass().getResource(AUDIO_ROOT + "test.mp3").toExternalForm());
             mediaPlayer = new MediaPlayer(testMedia);
+            mediaPlayer.volumeProperty().bind(volume);
             mediaPlayer.setAutoPlay(true);
 
         }
 
         private static AudioClip loadAudio(String path) throws Exception {
-            return new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
+            AudioClip clip = new AudioClip(instance.getClass().getResource(AUDIO_ROOT + path).toExternalForm());
+            clip.volumeProperty().bind(volume);
+            return clip;
         }
 
         private static void loadAll() throws Exception {
             EXPLOSION = loadAudio("explosion.wav");
             COIN = loadAudio("coin.wav");
             POWERUP = loadAudio("powerup.wav");
-
-
         }
     }
 

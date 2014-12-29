@@ -123,7 +123,7 @@ public class Menu extends Parent {
         itemAudio.setMenuContent(new MenuContent() {
             @Override
             protected void createContent(VBox vbox) {
-                Slider slider = new Slider(0, 1.0, 0.0);
+                Slider slider = new Slider(0, 1.0, 0.5);
                 Config.volume.bind(slider.valueProperty());
 
                 Text textVolume = new Text();

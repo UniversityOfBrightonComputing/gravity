@@ -51,7 +51,7 @@ public class Coin extends GameObject {
     @Override
     public void onCollide(GameObject other) {
         if (other.getType() == Type.PLAYER) {
-            Config.Audio.COIN.play(Config.getVolume());
+            Config.Audio.COIN.play();
             onDeath();
         }
     }
