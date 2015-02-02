@@ -107,8 +107,6 @@ public final class Config {
             Images.loadAll();
             Audio.loadAll();
             Text.loadAll();
-
-
         }
         catch (Exception e) {
             // shouldn't happen unless someone's tampering with the jar
@@ -175,7 +173,6 @@ public final class Config {
             mediaPlayer = new MediaPlayer(testMedia);
             mediaPlayer.volumeProperty().bind(volume);
             mediaPlayer.setAutoPlay(true);
-
         }
 
         private static AudioClip loadAudio(String path) throws Exception {
